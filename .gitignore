@@ -53,3 +53,7 @@
 /.idea/*
 /client/.idea/*
 vendor/bundle
+
+# Ignore database.yml file
+/config/database.yml
+/config/secrets.yml

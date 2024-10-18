@@ -6,7 +6,7 @@ set :application, "bsmai"
 set :repo_url, "https://#{Rails.application.secrets.github_access_token}@github.com/papayalabs/bsmai.git"
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'certs'
-append :linked_files, 'config/database.yml'# , 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
+append :linked_files, 'config/database.yml','config/puma.rb' # , 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
 
 set :whenever_environment, -> { "#{fetch(:stage)}" }
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
@@ -123,13 +123,13 @@ end
 #  end
 #end
 
-after 'deploy:publishing', 'deploy:restart'
-namespace :deploy do
-  task :restart do
+after 'deploy:publishing'#, 'deploy:restart'
+#namespace :deploy do
+#  task :restart do
     #invoke 'puma:stop'
     #invoke 'puma:start'
-  end
-end
+#  end
+#end
 
 namespace :deploy do
   desc "reload the database with seed data"
