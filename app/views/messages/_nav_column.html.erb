@@ -1,12 +1,6 @@
 <header class="pl-2 py-7 text-3xl relative">
-    <div style="padding: 10px 10px;">
-        <select onChange="self.location=this.options[this.selectedIndex].value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option value="<%= root_path %>" selected><%= "Run MS Process" %></option>
-            <option value="<%= prompt_editor_prompts_path(prompt_process_id: PromptProcess.first.id) %>"><%= "Prompt Editor" %></option>
-            <option value="<%= edit_settings_assistant_path(Current.user.assistants.first) %>"><%= "Settings" %></option> 
-        </select>
-    </div>
-  </header>
+    <%= render "layouts/logo_and_drop_down_menu" %>
+</header>
 
 </br>
 
