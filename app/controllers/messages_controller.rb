@@ -88,6 +88,9 @@ class MessagesController < ApplicationController
   end
 
   def send_google_sheet_url
+    unless params[:prompt_process_id].present?
+      redirect_to assistants_path, error: "You need to select a Prompt Process"
+    end
     prompt_process = PromptProcess.find(params[:prompt_process_id])
     google_sheet_id = params[:url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
     prompt_index = prompt_process.prompts.priority.first.id
@@ -98,7 +101,7 @@ class MessagesController < ApplicationController
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
 
     @message = @assistant.messages.new(content_text: prompt_instructions)
-    
+
     if @message.save
       @message.conversation.state["prompt_index"] = prompt_index
       @message.conversation.state["google_sheet_id"] = google_sheet_id
