@@ -15,6 +15,7 @@ user = User.new
 user.first_name = "Daniel"
 user.last_name = "Burns"
 user.password = "password"
+user.preferences[:dark_mode] = "dark"
 user.save!
 
 
@@ -28,7 +29,3 @@ user.person = person
 user.save!
 
 puts user.first_name.to_s+" Created"
-
-prompt_process = PromptProcess.new
-prompt_process.name = "New Process"
-prompt_process.save!
