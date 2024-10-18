@@ -1,0 +1,43 @@
+<%= form_with(model: [:prompt_editor, prompt], class: "contents") do |form| %>
+  <% if prompt.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(prompt.errors.count, "error") %> prohibited this language model from being saved:</h2>
+
+      <ul>
+        <% prompt.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= hidden_field_tag :prompt_process_id, params[:prompt_process_id]%>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :instructions %>
+    <%= form.text_area :instructions, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black", rows: 15 %>
+    <span>Use [COLUMN,ROW] for fields in Google Sheet. Example [B,3]</span>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :priority %>
+    <%= form.text_field :priority, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+  </div>
+
+
+  <%= form.submit "Save",
+    class: %|
+      inline-block font-bold
+      bg-gray-200 dark:bg-gray-900
+      border border-gray-400
+      rounded-lg py-3 px-5
+      cursor-pointer
+    |,
+    data: { turbo_submits_with: "Saving..." }
+  %>
+<% end %>

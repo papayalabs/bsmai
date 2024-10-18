@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_DB: app_development
+      POSTGRES_PASSWORD: secret
+    volumes:
+    - bsmai_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "app", "-d", "app_development"]
+      interval: 1s
+      retries: 5
+
+  base: &base
+    depends_on: ["postgres"]
+    restart: on-failure:3
+    tty: true
+    build:
+      context: .
+      target: development
+    environment:
+      - DATABASE_URL=postgres://app:secret@postgres/app_development
+      - DEV_HOST=${DEV_HOST:-localhost} # Set if you want to use a different hostname
+    ports: ["3000:3000"]
+    volumes:
+      - .:/rails
+
+  worker:
+    <<: *base
+    restart: on-failure:3
+    tty: false
+    ports: []
+    command: bin/rails solid_queue:start
+
+volumes:
+  bsmai_pgdata:

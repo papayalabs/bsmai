@@ -1,0 +1,41 @@
+<%= content_for :nav_column do %>
+  <%= render 'nav_column' %>
+<% end %>
+
+<%= content_for :messages do %>
+
+  <%= turbo_stream_from @conversation %>
+
+  <div
+    class="min-w-full"
+    data-controller="keyboard"
+    data-action="
+      keydown.meta+shift+c@document->keyboard#click:prevent
+      keydown.ctrl+shift+c@document->keyboard#click:prevent
+    "
+  >
+    <turbo-frame id="messages">  <%# development works w/o this frame but test does not %>
+      <%= render @messages %>
+    </turbo-frame>
+
+  </div>
+  <% if @conversation.state["prompt_index"].present? %>
+    <div class="min-w-full mb-5 ml-9 sm:ml-3 md:ml-8 group">
+      <%= button_to "Next Prompt", assistant_messages_path(@conversation.assistant),
+                          class: "bg-transparent hover:bg-white-500 text-white-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded",
+                          method: :post,
+                          data: {
+                            turbo_frame: "_top",
+                            turbo_action: "replace",
+                          },
+                          params: { prompt_index: @conversation.state["prompt_index"],
+                            message: {
+                            conversation_id: @conversation.id,
+                            assistant_id: @conversation.assistant.id,
+                          } } %>
+    </div>
+  <% end %>
+
+<% end %>
+
+<%= render "main_column" %>

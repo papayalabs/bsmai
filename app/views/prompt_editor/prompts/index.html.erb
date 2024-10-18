@@ -1,0 +1,45 @@
+<turbo-frame id="prompts">
+  <h1 class="text-3xl"><%= PromptProcess.find(@prompt_process.id).name %> Prompts</h1>
+
+  <p class="my-8">
+    <%= link_to "Add New",
+      new_prompt_editor_prompt_path(:prompt_process_id => @prompt_process.id), 
+      data: { turbo: false },
+      class: %| inline-block font-bold
+        bg-gray-200 dark:bg-gray-900
+        border border-gray-400
+        rounded-lg py-3 px-5
+        cursor-pointer
+      | %>
+  </p>
+
+  <table id="prompts" class="w-full table-auto border-b border-gray-300 dark:border-b-0">
+    <thead>
+      <tr class="bg-gray-200 dark:bg-gray-900">
+        <th>Name</th>
+        <th>Instructions</th>
+        <th>Priority</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @prompts.each do |prompt| %>
+          <tr class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer">
+            <td class="underline"><%= link_to prompt.name, edit_prompt_editor_prompt_path(prompt), data: { turbo: false } %></td>
+            <td><%= prompt.instructions %></td>
+            <td><%= prompt.priority %></td>
+          </tr>
+      <% end %>
+    </tbody>
+  </table>
+</turbo-frame>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    document.querySelectorAll("table#prompts tr[data-href]").forEach(row => {
+      row.addEventListener("click", () => {
+        window.location.href = row.dataset.href;
+      });
+    });
+  });
+</script>

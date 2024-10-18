@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+export PORT="${PORT:-9838}"
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+if command -v overmind > /dev/null 2>&1; then
+  exec overmind start -f Procfile "$@"
+else
+  if ! gem list foreman -i --silent; then
+    echo "Installing foreman..."
+    gem install foreman
+  fi
+
+  bundle install
+  bin/rails db:prepare
+  exec foreman start -f Procfile "$@"
+fi

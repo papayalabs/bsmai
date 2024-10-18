@@ -1,0 +1,35 @@
+samantha:
+  user: keith
+  model: gpt-4
+  name: Samantha
+  description: My personal assistant
+  instructions: You are a helpful assistant
+  tools: [{"type": "code_interpreter"}, {"type": "retrieval"}, {"type": "function"}]
+  images: true
+
+keith_gpt4:
+  user: keith
+  model: gpt-4
+  name: GPT-4
+  description: OpenAI's GPT-4
+  instructions:
+  tools: [{"type": "code_interpreter"}, {"type": "retrieval"}, {"type": "function"}]
+  images: true
+
+keith_claude3:
+  user: keith
+  model: claude-3-opus-20240229
+  name: Claude 3 Opus
+  description: Claude 3, Opus version
+  instructions:
+  tools: []
+  images: true
+
+rob_gpt4:
+  user: rob
+  model: gpt-4
+  name: GPT-4
+  description: OpenAI's GPT-4
+  instructions:
+  tools: [{"type": "code_interpreter"}, {"type": "retrieval"}, {"type": "function"}]
+  images: true

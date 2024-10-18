@@ -1,0 +1,16 @@
+guest:
+  email: nil
+
+keith_registered:
+  email: keith@bsmai.com
+  personable_type: User
+  personable_id: <%= ActiveRecord::FixtureSet.identify(:keith) %>
+
+rob_registered:
+  email: rob@bsmai.com
+  personable_type: User
+  personable_id: <%= ActiveRecord::FixtureSet.identify(:rob) %>
+
+ali_invited:
+  email: ali@bsmai.com
+

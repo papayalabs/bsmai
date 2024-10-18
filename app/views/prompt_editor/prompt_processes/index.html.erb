@@ -1,0 +1,40 @@
+<h1 class="text-3xl">Prompts</h1>
+
+<p class="my-8">
+  <%= link_to "Add New",
+    new_prompt_editor_prompt_process_path,
+    class: %| inline-block font-bold
+      bg-gray-200 dark:bg-gray-900
+      border border-gray-400
+      rounded-lg py-3 px-5
+      cursor-pointer
+    | %>
+</p>
+
+<table id="language-models" class="w-full table-auto border-b border-gray-300 dark:border-b-0">
+  <thead>
+    <tr class="bg-gray-200 dark:bg-gray-900">
+      <th>Name</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @prompt_processes.each do |prompt_process| %>
+      <%= turbo_frame_tag dom_id(prompt_process) do %>
+        <tr class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer" data-href="<%= edit_prompt_editor_prompt_path(prompt_process) %>">
+          <td class="underline"><%= prompt_process.name %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    document.querySelectorAll("table#language-models tr[data-href]").forEach(row => {
+      row.addEventListener("click", () => {
+        window.location.href = row.dataset.href;
+      });
+    });
+  });
+</script>

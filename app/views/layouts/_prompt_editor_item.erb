@@ -1,0 +1,25 @@
+<% item, link = prompt_editor_item %>
+<% selected = (controller.to_s == controller_name.to_s) %>
+<% selected = selected && params[:id] == item.id.to_s  if params[:id] %>
+
+<% if item.is_a?(PromptProcess) %>
+  <% @prompt_process = item %>
+  <%= render "prompt_editor/prompt_processes/prompt_process" %>
+<% else %>
+  <div>
+    <%= link_to link,
+          class: %| inline-block font-bold
+              bg-gray-200 dark:bg-gray-900
+              border border-gray-400
+              rounded-lg py-3 px-5
+              cursor-pointer,
+            #{selected && "cursor-default" }
+          |,
+          data: { role: "name" } do
+    %>
+      <span>
+        <%= item.name %>
+      </span>
+    <% end %>
+  </div>
+<% end %>

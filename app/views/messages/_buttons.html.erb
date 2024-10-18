@@ -1,0 +1,85 @@
+         <% formatted_text = format message.content_text,
+                append_inside_tag: span_tag("", class: %|
+                  animate-breathe
+                  w-3 h-3
+                  rounded-full
+                  bg-black dark:bg-white
+                  inline-block
+                  ml-1
+                  #{!thinking && 'hidden'}
+                |) +
+                span_tag(" ...", class: (message.content_text.blank? || message.not_cancelled?) && 'hidden') +
+                icon("stop",
+                  variant: :solid,
+                  size: 17,
+                  title: "Stopped",
+                  tooltip: :top,
+                  data: { role: "cancelled" },
+                  class: "inline-block pl-1 #{message.not_cancelled? && 'hidden'}"
+                )
+          %>
+         
+         <% if message.user? && !message.has_document_image? %>
+            <%= link_to edit_assistant_message_path(message.assistant, message),
+              class: "cursor-pointer hover:text-gray-900 dark:hover:text-white flex items-center",
+              data: {
+                role: "edit",
+                turbo_frame: "message-#{message.id}",
+              } do %>
+              <%= icon "pencil", variant: :outline, size: 18, title: "Edit" %>
+            <% end %>
+          <% elsif message.assistant? %>
+            <%= button_tag type: "button",
+                  class: "cursor-pointer hover:text-gray-900 dark:hover:text-white",
+                  data: {
+                    role: "clipboard",
+                    action: %|
+                      clipboard#copy
+                      transition#toggleClassOn
+                      mouseleave->transition#toggleClassOff
+                    |,
+                    keyboard_target: formatted_text.present? && formatted_text.exclude?('keyboard-target') ? "keyboardable" : nil,
+                    # ^ ensure the keyboard shortcut is only attached if there is text && if this text does not contain a code block
+            } do %>
+              <%= icon "clipboard", variant: :outline, size: 18, title: "Copy", data: { transition_target: "transitionable" } %>
+              <%= icon "check", variant: :outline, size: 18, title: "Copied!", data: { transition_target: "transitionable" }, class: "hidden" %>
+            <% end %>
+
+            <div class="dropdown dropdown-top flex items-center">
+              <%= icon "arrow-path",
+                tabindex: 0,
+                role: :button,
+                variant: :outline,
+                size: 18,
+                title: "Regenerate",
+                data: { role: "regenerate" }
+              %>
+
+              <menu tabindex="0" class="dropdown-content -ml-6 z-10 menu p-2 shadow-xl bg-base-100 rounded-box w-52 dark:!bg-gray-700">
+                <% message.user.assistants.ordered.excluding(message.assistant).to_a.push(message.assistant).each do |assistant| %>
+                  <% last = message.assistant == assistant %>
+                  <li class="overflow-hidden <%= 'border-t border-gray-200 dark:border-gray-500 pt-1 mt-1' if last %>">
+                    <%= button_to assistant_messages_path(assistant),
+                      form_class: "inline-block p-0",
+                      class: "truncate w-full py-2 px-4 text-left",
+                      method: :post,
+                      data: {
+                        turbo_frame: "_top",
+                        turbo_action: "replace",
+                      },
+                      params: { message: {
+                        conversation_id: conversation.id,
+                        assistant_id: assistant.id,
+                        role: "assistant",
+                        index: message.index,
+                        branched: true,
+                        branched_from_version: message.version
+                      } } do
+                    %>
+                      Using <%= assistant.name %>
+                    <% end %>
+                  </li>
+                <% end %>
+              </menu>
+            </div>
+          <% end %>
