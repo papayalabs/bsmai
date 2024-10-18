@@ -19,7 +19,9 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 <% if RUBY_PLATFORM =~ /darwin/ %>
   gssencmode: disable
-<% end %>
+  username: papayalabs
+  password: 
+  port: 5432
 
 development:
   <<: *default
@@ -82,5 +84,4 @@ test:
 production:
   <<: *default
   database: bsmai_production
-  username: bsmai
-  password: <%= ENV["HOSTEDGPT_DATABASE_PASSWORD"] %>
+

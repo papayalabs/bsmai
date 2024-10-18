@@ -6,7 +6,7 @@ set :application, "bsmai"
 set :repo_url, "https://#{Rails.application.secrets.github_access_token}@github.com/papayalabs/bsmai.git"
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'certs'
-#append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
+append :linked_files, 'config/database.yml'# , 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
 
 set :whenever_environment, -> { "#{fetch(:stage)}" }
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
