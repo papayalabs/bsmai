@@ -6,7 +6,7 @@ set :application, "bsmai"
 set :repo_url, "https://#{Rails.application.secrets.github_access_token}@github.com/papayalabs/bsmai.git"
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'certs'
-append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
+#append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/puma.rb','config/unicorn.rb'
 
 set :whenever_environment, -> { "#{fetch(:stage)}" }
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
@@ -17,8 +17,8 @@ set :branch, "main"
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/var/www/bsmai"
-set :unicorn_config_path, "/var/www/bsmai/shared/config/unicorn.rb"
-set :puma_config_path, "/var/www/bsmai/shared/config/puma.rb"
+#set :unicorn_config_path, "/var/www/bsmai/shared/config/unicorn.rb"
+#set :puma_config_path, "/var/www/bsmai/shared/config/puma.rb"
 
 #set :default_env, { rvm_bin_path: '/usr/local/rvm/bin' }
 
