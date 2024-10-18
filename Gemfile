@@ -84,7 +84,7 @@ group :development do
   gem 'capistrano-rails-console', require: false
   gem 'capistrano-rake', require: false
   gem 'capistrano-rvm', require: false
-  gem "capistrano3-puma", github: "seuros/capistrano-puma"
+  #gem "capistrano3-puma", github: "seuros/capistrano-puma"
   gem 'sshkit-sudo'
   gem 'capistrano3-unicorn'
   gem 'pry'

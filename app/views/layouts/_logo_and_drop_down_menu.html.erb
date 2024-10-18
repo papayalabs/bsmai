@@ -1,8 +1,8 @@
-<div style="padding: 10px 10px;">
+<div style="padding: 15px;">
     <%= image_tag("bsmai.png", width: "192", height: "144", class: "text-gray-950") %>
     </br>
     <select onChange="self.location=this.options[this.selectedIndex].value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-        <option value="<%= assistants_path %>" <%= request.path.include? "/messages" ? "selected" : "" %>><%= "Run MS Process" %></option>
+        <option value="<%= assistants_path %>" <%= request.path.include? "/messages" ? "selected" : "" %>><%= "Run Process" %></option>
         <option value="<%= prompt_editor_prompts_path(prompt_process_id: PromptProcess.first.id) %>" <%= request.path.include?("prompt_editor/prompts") ? "selected" : "" %>><%= "Prompt Editor" %></option>
         <option value="<%= edit_settings_assistant_path(Current.user.assistants.first) %>" <%= request.path.include?("settings") ? "selected" : "" %>><%= "Settings" %></option> 
     </select>
