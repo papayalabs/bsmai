@@ -19,9 +19,6 @@ require 'capistrano/rake'
 # install_plugin Capistrano::SCM::Svn
 # or
 require "capistrano/scm/git"
-require 'capistrano/puma'
-install_plugin Capistrano::Puma  # Default puma tasks
-install_plugin Capistrano::Puma::Systemd
 install_plugin Capistrano::SCM::Git
 
 # Include tasks from other gems included in your Gemfile
