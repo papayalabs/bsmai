@@ -16,17 +16,17 @@
   <table id="prompts" class="w-full table-auto border-b border-gray-300 dark:border-b-0">
     <thead>
       <tr class="bg-gray-200 dark:bg-gray-900">
-        <th>Name</th>
-        <th>Instructions</th>
-        <th>Priority</th>
+        <th style="padding:15px;">Name</th>
+        <th style="padding:15px;">Instructions</th>
+        <th style="padding:15px;">Priority</th>
       </tr>
     </thead>
 
     <tbody>
       <% @prompts.each do |prompt| %>
           <tr class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer">
-            <td class="underline"><%= link_to prompt.name, edit_prompt_editor_prompt_path(prompt), data: { turbo: false } %></td>
-            <td><%= prompt.instructions %></td>
+            <td style="padding:15px;" class="underline"><%= link_to prompt.name, edit_prompt_editor_prompt_path(prompt), data: { turbo: false } %></td>
+            <td style="padding:15px;"><%= prompt.truncate(prompt.instructions,(100)) %></td>
             <td><%= prompt.priority %></td>
           </tr>
       <% end %>
