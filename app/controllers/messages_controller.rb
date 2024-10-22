@@ -40,6 +40,7 @@ class MessagesController < ApplicationController
 
   def create
     if params[:prompt_index].present?
+      last_prompt = false
       current_prompt = Prompt.find(params[:prompt_index])
       prompt_process = current_prompt.prompt_process
       prompts = prompt_process.prompts.priority
@@ -53,6 +54,9 @@ class MessagesController < ApplicationController
       end
       index += 1
       next_prompt = prompt_process.prompts.priority[index]
+      if next_prompt == prompt_process.prompts.priority.last
+        last_prompt = true
+      end
       conversation = Conversation.find(params[:message][:conversation_id])
       params[:message][:content_text] = get_prompt_instructions_with_google_sheet(next_prompt.id,conversation.state["google_sheet_id"])
     end
@@ -62,6 +66,7 @@ class MessagesController < ApplicationController
     if @message.save
       if params[:prompt_index].present?
         @message.conversation.state["prompt_index"] = next_prompt.id
+        @message.conversation.state["last_prompt"] = last_prompt
         @message.conversation.save
       end
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
@@ -91,9 +96,13 @@ class MessagesController < ApplicationController
     unless params[:prompt_process_id].present?
       redirect_to assistants_path, error: "You need to select a Prompt Process"
     end
+    last_prompt = false
     prompt_process = PromptProcess.find(params[:prompt_process_id])
     google_sheet_id = params[:url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
     prompt_index = prompt_process.prompts.priority.first.id
+    if prompt_process.prompts.priority.first == prompt_process.prompts.priority.last
+      last_prompt = true
+    end
     prompt_instructions = get_prompt_instructions_with_google_sheet(prompt_index,google_sheet_id)
 
     @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
@@ -104,6 +113,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       @message.conversation.state["prompt_index"] = prompt_index
+      @message.conversation.state["last_prompt"] = last_prompt
       @message.conversation.state["google_sheet_id"] = google_sheet_id
       @message.conversation.save
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
