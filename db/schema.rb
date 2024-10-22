@@ -153,7 +153,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_16_102712) do
     t.string "name"
     t.string "description"
     t.string "instructions"
-    t.integer "priority", default: 0
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["prompt_process_id"], name: "index_prompts_on_prompt_process_id"

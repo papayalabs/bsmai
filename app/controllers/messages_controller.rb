@@ -43,7 +43,7 @@ class MessagesController < ApplicationController
       last_prompt = false
       current_prompt = Prompt.find(params[:prompt_index])
       prompt_process = current_prompt.prompt_process
-      prompts = prompt_process.prompts.priority
+      prompts = prompt_process.prompts
       index = 0
       prompts.each do |prompt|
         if prompt == current_prompt
@@ -53,8 +53,8 @@ class MessagesController < ApplicationController
         end
       end
       index += 1
-      next_prompt = prompt_process.prompts.priority[index]
-      if next_prompt == prompt_process.prompts.priority.last
+      next_prompt = prompt_process.prompts[index]
+      if next_prompt == prompt_process.prompts.last
         last_prompt = true
       end
       conversation = Conversation.find(params[:message][:conversation_id])
@@ -99,8 +99,8 @@ class MessagesController < ApplicationController
     last_prompt = false
     prompt_process = PromptProcess.find(params[:prompt_process_id])
     google_sheet_id = params[:url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
-    prompt_index = prompt_process.prompts.priority.first.id
-    if prompt_process.prompts.priority.first == prompt_process.prompts.priority.last
+    prompt_index = prompt_process.prompts.first.id
+    if prompt_process.prompts.first == prompt_process.prompts.last
       last_prompt = true
     end
     prompt_instructions = get_prompt_instructions_with_google_sheet(prompt_index,google_sheet_id)

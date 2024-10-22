@@ -5,7 +5,7 @@ class CreatePrompts < ActiveRecord::Migration[7.1]
       t.string :name
       t.string :description
       t.string :instructions
-      t.integer :priority, :default => 0
+      t.integer :position
       t.timestamps
     end
   end

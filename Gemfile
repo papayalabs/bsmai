@@ -110,4 +110,6 @@ gem 'daemons'
 gem 'foreman'
 gem "roo", "~> 2.10.0"
 
+gem 'acts_as_list'
+
 #gem 'unicorn-rails'
