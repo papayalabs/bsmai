@@ -15,7 +15,6 @@ class AIBackend::Gemini
   end
 
   def initialize(user, assistant, conversation, message)
-    #raise Gemini::ConfigurationError if user.ollama.blank?
     begin
       @client = self.class.client.new(
         credentials: {
@@ -25,7 +24,7 @@ class AIBackend::Gemini
         options: { model: assistant.model, server_sent_events: true }
       )
     rescue ::Faraday::UnauthorizedError => e
-      raise Gemini::ConfigurationError
+      raise Faraday::UnauthorizedError
     end
     @assistant = assistant
     @conversation = conversation
@@ -39,7 +38,7 @@ class AIBackend::Gemini
       )
       response_text = response["candidates"][0]["content"]["parts"][0]["text"]
     rescue ::Faraday::UnauthorizedError => e
-      raise Gemini::ConfigurationError
+      raise Faraday::UnauthorizedError
     end
 
     if response_text.blank? #&& stream_response_text.blank?
@@ -56,7 +55,7 @@ class AIBackend::Gemini
       response = @client.stream_generate_content({contents: preceding_messages})
     rescue ::Faraday::UnauthorizedError => e
       puts e.message
-      raise Gemini::ConfigurationError
+      raise Faraday::UnauthorizedError
     end
     return response.map { |h| h["candidates"][0]["content"]["parts"][0]["text"] }
   end

@@ -64,20 +64,8 @@ class GetNextAIMessageJob < ApplicationJob
     puts "\n### Response cancelled in GetNextAIMessageJob(#{message_id})" unless Rails.env.test?
     wrap_up_the_message
     return true
-  rescue OpenAI::ConfigurationError => e
-    set_openai_error
-    wrap_up_the_message
-    return true
-  rescue Anthropic::ConfigurationError => e
-    set_anthropic_error
-    wrap_up_the_message
-    return true
-  #rescue Ollama::ConfigurationError => e
-  #  set_ollama_error
-  #  wrap_up_the_message
-  #  return true
-  rescue Gemini::ConfigurationError => e
-    set_gemini_error
+  rescue Faraday::UnauthorizedError => e
+    set_unauth_error
     wrap_up_the_message
     return true
   rescue Faraday::ParsingError => e
@@ -141,6 +129,10 @@ class GetNextAIMessageJob < ApplicationJob
   def set_gemini_error
     @message.content_text = "(You need to enter a valid API key for Gemini. Click your Profile in the bottom " +
       "left and then Settings. You will find Gemini Key instructions.)"
+  end
+
+  def set_unauth_error
+    @message.content_text = "You need to enter a valid API key"
   end
 
   def set_response_error

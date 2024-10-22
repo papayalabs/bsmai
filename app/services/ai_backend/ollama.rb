@@ -15,7 +15,6 @@ class AIBackend::Ollama
   end
 
   def initialize(user, assistant, conversation, message)
-    #raise Ollama::ConfigurationError if user.ollama.blank?
     begin
       #@client = self.class.client.new(access_token: user.openai_key)
       @client = self.class.client.new(
@@ -23,7 +22,7 @@ class AIBackend::Ollama
         options: { server_sent_events: true }
       )
     rescue ::Faraday::UnauthorizedError => e
-      raise Ollama::ConfigurationError
+      raise Faraday::UnauthorizedError
     end
     @assistant = assistant
     @conversation = conversation
@@ -39,7 +38,7 @@ class AIBackend::Ollama
       end
       return response_text
     rescue ::Faraday::UnauthorizedError => e
-      raise Ollama::ConfigurationError
+      raise Faraday::UnauthorizedError
     end
 
     if response_text.blank? #&& stream_response_text.blank?
@@ -53,7 +52,7 @@ class AIBackend::Ollama
     begin
       response = @client.chat({ model: @assistant.model,messages: system_message + preceding_messages })
     rescue ::Faraday::UnauthorizedError => e
-      raise Ollama::ConfigurationError
+      raise Faraday::UnauthorizedErrors
     end
     return response.map { |h| h["message"]["content"] }
   end
