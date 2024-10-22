@@ -3,7 +3,7 @@ class PromptEditor::PromptsController < PromptEditor::ApplicationController
 
   def index
     @prompt_process = PromptProcess.find(params[:prompt_process_id])
-    @prompts = Prompt.where(prompt_process_id: @prompt_process.id).order(updated_at: :desc)
+    @prompts = Prompt.where(prompt_process_id: @prompt_process.id).order(priority: :asc).order(updated_at: :desc)
   end
 
   def edit
@@ -19,6 +19,7 @@ class PromptEditor::PromptsController < PromptEditor::ApplicationController
   def create
     @prompt = Prompt.new(prompt_params)
     @prompt.prompt_process_id = params[:prompt_process_id]
+    @prompt.priority = PromptProcess.find(params[:prompt_process_id]).prompts.length+1
 
     if @prompt.save
       redirect_to prompt_editor_prompts_path(prompt_process_id: @prompt.prompt_process.id), notice: "Saved", status: :see_other

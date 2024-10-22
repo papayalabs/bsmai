@@ -14,24 +14,24 @@
   </p>
 
   <table id="prompts" class="w-full table-auto border-b border-gray-300 dark:border-b-0">
-    <thead>
-      <tr class="bg-gray-200 dark:bg-gray-900">
-        <th style="padding:15px;">Name</th>
-        <th style="padding:15px;">Instructions</th>
-        <th style="padding:15px;">Priority</th>
-      </tr>
-    </thead>
-
     <tbody>
-      <% @prompts.each do |prompt| %>
-          <tr class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer">
-            <td style="padding:15px;" class="underline"><%= link_to prompt.name, edit_prompt_editor_prompt_path(prompt), data: { turbo: false } %></td>
-            <td style="padding:15px;"><%= prompt.truncate(prompt.instructions,(100)) %></td>
-            <td><%= prompt.priority %></td>
-          </tr>
-      <% end %>
+      <ul>
+        <li style="padding:15px;" class="bg-gray-200 dark:bg-gray-900">
+          <div style="display:inline-block;width:150px;">Name</div>
+          <div style="display:inline-block;">Instructions</div>
+        </li>
+      </ul>
+      <ul data-controller="sortable" data-sortable-resource-name-value="prompt" data-sortable-param-name-value="priority">
+        <% @prompts.each do |prompt| %>
+          <li data-sortable-update-url="<%= prompt_editor_prompt_path(prompt) %>" style="padding:15px;" class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer">
+            <div style="display:inline-block;width:150px;" class="underline"><%= link_to prompt.name, edit_prompt_editor_prompt_path(prompt), data: { turbo: false } %></div>
+            <div style="display:inline-block;"><%= prompt.truncate(prompt.instructions,(100)) %></div>
+          </li>
+        <% end %>
+      </ul>
     </tbody>
   </table>
+
 </turbo-frame>
 
 <script>
@@ -43,3 +43,6 @@
     });
   });
 </script>
+<style>
+
+</style>
