@@ -37,7 +37,7 @@ class PromptEditor::PromptProcessesController < PromptEditor::ApplicationControl
 
   def update
     if @prompt_process.update(prompt_process_params)
-      redirect_to prompt_editor_prompt_processs_path, notice: "Saved", status: :see_other
+      redirect_to prompt_editor_prompt_process_path, notice: "Saved", status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
