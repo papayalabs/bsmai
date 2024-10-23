@@ -2,8 +2,8 @@ class PromptEditor::PromptsController < PromptEditor::ApplicationController
   before_action :set_prompt, only: [:show, :edit, :update, :destroy]
 
   def index
-    @prompt_process = PromptProcess.find(params[:prompt_process_id])
-    @prompts = @prompt_process.prompts
+    @prompt_process_variable = PromptProcess.find(params[:prompt_process_id])
+    @prompts = @prompt_process_variable.prompts
   end
 
   def edit

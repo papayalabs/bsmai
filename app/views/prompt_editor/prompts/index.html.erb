@@ -1,9 +1,12 @@
+<%= content_for :nav_column do %>
+  <%= render 'nav_column' %>
+<% end %>
 <turbo-frame id="prompts">
-  <h1 class="text-3xl"><%= PromptProcess.find(@prompt_process.id).name %> Prompts</h1>
+  <h1 class="text-3xl"><%= PromptProcess.find(@prompt_process_variable.id).name %> Prompts</h1>
 
   <p class="my-8">
     <%= link_to "Add New",
-      new_prompt_editor_prompt_path(:prompt_process_id => @prompt_process.id), 
+      new_prompt_editor_prompt_path(:prompt_process_id => @prompt_process_variable.id), 
       data: { turbo: false },
       class: %| inline-block font-bold
         bg-gray-200 dark:bg-gray-900

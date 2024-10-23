@@ -1,0 +1,11 @@
+  <header class="pl-2 py-7 text-3xl relative">
+    <%= render "layouts/logo_and_drop_down_menu" %>
+  </header>
+  <section id="menu" data-controller="radio-behavior" data-radio-behavior-selected-class="relationship">
+    <% @settings_menu.each do |controller, prompt_editor_items| %>
+      <div class="mb-5">
+        <%= render partial: "layouts/prompt_editor_item", collection: prompt_editor_items, locals: { controller: controller } %>
+      </div>
+    <% end %>
+  </section>
+
