@@ -59,8 +59,10 @@ class MessagesController < ApplicationController
       end
       conversation = Conversation.find(params[:message][:conversation_id])
       next_prompt_instructions = next_prompt.instructions
-      next_prompt_instructions = get_prompt_instructions_with_google_sheet_1(next_prompt_instructions,conversation.state["google_sheet_1_id"])
-      next_prompt_instructions = get_prompt_instructions_with_google_sheet_2(next_prompt_instructions,conversation.state["google_sheet_2_id"])
+      next_prompt_instructions = get_prompt_instructions_with_google_sheet_1(next_prompt_instructions,conversation.state["google_sheet_1_id"]) if conversation.state["google_sheet_1_id"].present?
+      next_prompt_instructions = get_prompt_instructions_with_google_sheet_2(next_prompt_instructions,conversation.state["google_sheet_2_id"]) if conversation.state["google_sheet_2_id"].present?
+      next_prompt_instructions = get_prompt_instructions_with_google_doc(next_prompt_instructions,conversation.state["google_doc_1_id"],1) if conversation.state["google_doc_1_id"].present?
+      next_prompt_instructions = get_prompt_instructions_with_google_doc(next_prompt_instructions,conversation.state["google_doc_2_id"],2) if conversation.state["google_doc_2_id"].present?
       params[:message][:content_text] = next_prompt_instructions
     end
 
@@ -107,6 +109,7 @@ class MessagesController < ApplicationController
     end
     prompt = Prompt.find(prompt_index)
     prompt_instructions = prompt.instructions
+    google_sheet_1_id,google_sheet_2_id,google_doc_1_id,google_doc_2_id = nil,nil,nil,nil
     if params[:google_sheet_1_url].present?
       google_sheet_1_id = params[:google_sheet_1_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
       prompt_instructions = get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
@@ -132,8 +135,10 @@ class MessagesController < ApplicationController
     if @message.save
       @message.conversation.state["prompt_index"] = prompt_index
       @message.conversation.state["last_prompt"] = last_prompt
-      @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id
-      @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id
+      @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id if google_sheet_1_id != nil
+      @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id if google_sheet_2_id != nil
+      @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
+      @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
       @message.conversation.save
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
       GetNextAIMessageJob.perform_later(current_user.id, after_create_assistant_reply.id, @assistant.id)
