@@ -111,5 +111,6 @@ gem 'foreman'
 gem "roo", "~> 2.10.0"
 
 gem 'acts_as_list'
+gem 'google-apis-drive_v3'
 
 #gem 'unicorn-rails'

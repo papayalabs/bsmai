@@ -6,9 +6,9 @@ class MessagesController < ApplicationController
   before_action :set_conversation,          only: [:index]
   before_action :set_assistant,             only: [:index, :new, :edit, :create]
   before_action :set_message,               only: [:show, :edit, :update]
-  before_action :set_nav_conversations,     only: [:index, :new, :send_google_sheet_url]
-  before_action :set_nav_assistants,        only: [:index, :new, :send_google_sheet_url]
-  before_action :set_conversation_starters, only: [:new, :send_google_sheet_url]
+  before_action :set_nav_conversations,     only: [:index, :new, :start_new_process]
+  before_action :set_nav_assistants,        only: [:index, :new, :start_new_process]
+  before_action :set_conversation_starters, only: [:new, :start_new_process]
 
   def index
     if @version.blank?
@@ -58,7 +58,10 @@ class MessagesController < ApplicationController
         last_prompt = true
       end
       conversation = Conversation.find(params[:message][:conversation_id])
-      params[:message][:content_text] = get_prompt_instructions_with_google_sheet(next_prompt.id,conversation.state["google_sheet_id"])
+      next_prompt_instructions = next_prompt.instructions
+      next_prompt_instructions = get_prompt_instructions_with_google_sheet_1(next_prompt_instructions,conversation.state["google_sheet_1_id"])
+      next_prompt_instructions = get_prompt_instructions_with_google_sheet_2(next_prompt_instructions,conversation.state["google_sheet_2_id"])
+      params[:message][:content_text] = next_prompt_instructions
     end
 
     @message = @assistant.messages.new(message_params)
@@ -92,19 +95,34 @@ class MessagesController < ApplicationController
     end
   end
 
-  def send_google_sheet_url
+  def start_new_process
     unless params[:prompt_process_id].present?
       redirect_to assistants_path, error: "You need to select a Prompt Process"
     end
     last_prompt = false
     prompt_process = PromptProcess.find(params[:prompt_process_id])
-    google_sheet_id = params[:url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
     prompt_index = prompt_process.prompts.first.id
     if prompt_process.prompts.first == prompt_process.prompts.last
       last_prompt = true
     end
-    prompt_instructions = get_prompt_instructions_with_google_sheet(prompt_index,google_sheet_id)
-
+    prompt = Prompt.find(prompt_index)
+    prompt_instructions = prompt.instructions
+    if params[:google_sheet_1_url].present?
+      google_sheet_1_id = params[:google_sheet_1_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
+      prompt_instructions = get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
+    end
+    if params[:google_sheet_2_url].present?
+      google_sheet_2_id = params[:google_sheet_2_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
+      prompt_instructions = get_prompt_instructions_with_google_sheet_2(prompt_instructions,google_sheet_2_id)
+    end
+    if params[:google_doc_1_url].present?
+      google_doc_1_id = params[:google_doc_1_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
+      prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_1_id,1)
+    end
+    if params[:google_doc_2_url].present?
+      google_doc_2_id = params[:google_doc_2_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
+      prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_2_id,2)
+    end
     @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
@@ -114,7 +132,8 @@ class MessagesController < ApplicationController
     if @message.save
       @message.conversation.state["prompt_index"] = prompt_index
       @message.conversation.state["last_prompt"] = last_prompt
-      @message.conversation.state["google_sheet_id"] = google_sheet_id
+      @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id
+      @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id
       @message.conversation.save
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
       GetNextAIMessageJob.perform_later(current_user.id, after_create_assistant_reply.id, @assistant.id)
@@ -129,21 +148,37 @@ class MessagesController < ApplicationController
     end
   end
 
-  def get_prompt_instructions_with_google_sheet(prompt_index,google_sheet_id)
-    url = 'https://docs.google.com/spreadsheets/d/'+google_sheet_id+'/export?format=xlsx'
+  def get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
+    url = 'https://docs.google.com/spreadsheets/d/'+google_sheet_1_id+'/export?format=xlsx'
     xls = Roo::Spreadsheet.open(url, extension: :xlsx)
 
-    prompt = Prompt.find(prompt_index)
-    prompt_instructions = prompt.instructions
-
-    tags = prompt_instructions.scan(/\[(\w+)\,(\d+)\]/)
+    puts prompt_instructions.inspect
+    tags = prompt_instructions.scan(/\[SHEET1,(\w+)\,(\d+)\]/)
+    puts tags.inspect
     tags.each do |tag|
-      prompt_instructions.gsub!("["+tag[0]+","+tag[1]+"]",xls.sheet(0).cell(tag[0],tag[1].to_i).to_s)
+      prompt_instructions.gsub!("[SHEET1,"+tag[0]+","+tag[1]+"]",xls.sheet(0).cell(tag[0],tag[1].to_i).to_s)
     end
     prompt_instructions
   end
 
+  def get_prompt_instructions_with_google_sheet_2(prompt_instructions,google_sheet_2_id)
+    url = 'https://docs.google.com/spreadsheets/d/'+google_sheet_2_id+'/export?format=xlsx'
+    xls = Roo::Spreadsheet.open(url, extension: :xlsx)
 
+    tags = prompt_instructions.scan(/\[SHEET2,(\w+)\,(\d+)\]/)
+    tags.each do |tag|
+      prompt_instructions.gsub!("[SHEET2,"+tag[0]+","+tag[1]+"]",xls.sheet(0).cell(tag[0],tag[1].to_i).to_s)
+    end
+    prompt_instructions
+  end
+
+  def get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_id,doc_number)
+    drive = Google::Apis::DriveV3::DriveService.new
+    drive.key = "AIzaSyA3_3KUVPruooI3M0lpzoG-yBKcm3i0jJQ"
+    txt = drive.export_file(google_doc_id,"text/plain")
+    prompt_instructions.gsub!("[DOC"+doc_number.to_s+"]",txt)
+    prompt_instructions
+  end
 
   private
 

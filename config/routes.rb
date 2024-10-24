@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   get "/register", to: "assistants#index" #"users#new"
   get "/logout", to: "assistants#index" #"sessions#destroy"
 
-  get "/send_google_sheet_url", to: "messages#send_google_sheet_url"
+  get "/start_new_process", to: "messages#start_new_process"
 
   get "/rails/active_storage/postgresql/:encoded_key/*filename" => "active_storage/postgresql#show", as: :rails_postgresql_service
   put "/rails/active_storage/postgresql/:encoded_token" => "active_storage/postgresql#update", as: :update_rails_postgresql_service
