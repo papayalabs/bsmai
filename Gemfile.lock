@@ -92,6 +92,8 @@ GEM
     ast (2.4.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
+    bcrypt_pbkdf (1.1.1)
+    bcrypt_pbkdf (1.1.1-x86_64-darwin)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
@@ -144,6 +146,7 @@ GEM
     dockerfile-rails (1.6.22)
       rails (>= 3.0.0)
     drb (2.2.1)
+    ed25519 (1.3.0)
     erd (0.8.2)
       nokogiri
       ruby-graphviz
@@ -489,6 +492,7 @@ DEPENDENCIES
   acts_as_list
   anthropic (~> 0.1.0)
   bcrypt (~> 3.1.7)
+  bcrypt_pbkdf (>= 1.0, < 2.0)
   better_errors
   bootsnap
   byebug
@@ -503,6 +507,7 @@ DEPENDENCIES
   daemons
   debug
   dockerfile-rails (>= 1.6)
+  ed25519 (>= 1.2, < 2.0)
   erd
   foreman
   gemini-ai (~> 4.2.0)
@@ -512,6 +517,7 @@ DEPENDENCIES
   listen
   minitest-stub_any_instance
   name_of_person
+  net-ssh (>= 6.0.2)
   ollama-ai (~> 1.3.0)
   pg (~> 1.1)
   pry
