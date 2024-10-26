@@ -15,7 +15,7 @@ user = User.new
 user.first_name = "Daniel"
 user.last_name = "Burns"
 user.password = "password"
-user.preferences[:dark_mode] = "dark"
+user.preferences["dark_mode"] = "dark"
 user.save!
 
 
