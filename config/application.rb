@@ -28,9 +28,10 @@ module BSMAI
     config.eager_load_paths << Rails.root.join("lib")
 
     config.features = config_for(:features)
-    config.hosts << "bsmoutlinegenerator.papayalabs.io"
+    config.hosts << "bsmai.papayalabs.io"
     config.hosts << "chat.papayalabs.io"
     config.hosts << "52.40.191.155"
     config.hosts << "bsmbrain.live"
+
   end
 end
