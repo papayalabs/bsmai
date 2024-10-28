@@ -1,7 +1,7 @@
-<% content_for :title, "BSMAI" %>
+<% content_for :title, "BSMAI - "+Current.user.name.to_s %>
 <!DOCTYPE html>
 <html 
-    class=<%= Current.user.preferences[:dark_mode] %>
+    class=<%= "dark" %>
   >
  
   <%= render "head" %>

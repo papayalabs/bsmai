@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def set_current_user
     Current.user = User.last
-    if PromptProcess.first == nil
+    if PromptProcess.all.count == 0
       PromptProcess.create!(:name => "New Process")
     end
   end
