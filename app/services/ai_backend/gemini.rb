@@ -68,6 +68,8 @@ class AIBackend::Gemini
       #response = @client.stream_generate_content({contents: preceding_messages,system_instruction: system_message})
       #response = @client.stream_generate_content({contents: preceding_messages})
       response = @client.send(client_method_name, @client_config) do |event, parsed, raw|
+        puts "Event from Gemini"
+        puts event.inspect
         yield event["candidates"][0]["content"]["parts"][0]["text"]
       end
     rescue ::Faraday::UnauthorizedError => e
