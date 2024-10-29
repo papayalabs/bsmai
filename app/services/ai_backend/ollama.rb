@@ -29,11 +29,29 @@ class AIBackend::Ollama
     @message = message
   end
 
+  def client_method_name
+    :chat
+  end
+
+  def configuration_error
+    ::OpenAI::ConfigurationError
+  end
+
+  def set_client_config(config)
+    @client_config = {
+      model: @assistant.model,
+      messages: config[:messages] + config[:instructions]
+    }
+  end
+
   def get_oneoff_message(instructions, messages, params = {})
+    set_client_config(
+        messages: preceding_messages,
+        instructions: system_message,
+      )
     begin
-      response = @client.chat({ model: 'llama3.2',messages: system_message + preceding_messages })
       response_text = ""
-      response.each do |event, raw|
+      @client.send(client_method_name, @client_config) do |event, raw|
         response_text += event["message"]["content"]
       end
       return response_text
@@ -48,13 +66,22 @@ class AIBackend::Ollama
     end
   end
 
-  def get_next_chat_message(&chunk_received_handler)
+  def get_next_chat_message(&chunk_handler)
+    set_client_config(
+      messages: preceding_messages,
+      instructions: system_message,
+    )
     begin
-      response = @client.chat({ model: @assistant.model,messages: system_message + preceding_messages })
-    rescue ::Faraday::UnauthorizedError => e
-      raise Faraday::UnauthorizedErrors
+      # Systeem instruction is not working well on gem 'gemini-ai'
+      #response = @client.stream_generate_content({contents: preceding_messages,system_instruction: system_message})
+      #response = @client.stream_generate_content({contents: preceding_messages})
+      response = @client.send(client_method_name, @client_config) do |event, raw|
+        yield event["message"]["content"]
+      end
+     rescue ::Faraday::UnauthorizedError => e
+       puts e.message
+       raise OpenAI::ConfigurationError
     end
-    return response.map { |h| h["message"]["content"] }
   end
 
   private
