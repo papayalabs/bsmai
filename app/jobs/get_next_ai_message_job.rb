@@ -34,11 +34,7 @@ class GetNextAIMessageJob < ApplicationJob
 
     puts "\n### Wait for reply" unless Rails.env.test?
 
-    response = ai_backend.new(@conversation.user, @assistant, @conversation, @message)
-    puts response.inspect
-    puts response.get_next_chat_message.inspect
-    response.get_next_chat_message.each do |content_chunk|
-      puts content_chunk.inspect
+    response = ai_backend.new(@conversation.user, @assistant, @conversation, @message).get_next_chat_message do |content_chunk|
       @message.content_text += content_chunk
 
       if Time.current.to_f - last_sent_at.to_f >= 0.1

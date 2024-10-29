@@ -31,33 +31,50 @@ class AIBackend::Gemini
     @message = message
   end
 
-  def get_oneoff_message(instructions, messages, params = {})
-    begin
-      response = @client.generate_content(
-        { contents: preceding_messages }
-      )
-      response_text = response["candidates"][0]["content"]["parts"][0]["text"]
-    rescue ::Faraday::UnauthorizedError => e
-      raise Faraday::UnauthorizedError
-    end
-
-    if response_text.blank? #&& stream_response_text.blank?
-      raise ::Faraday::ParsingError
-    else
-      response_text
-    end
+  def client_method_name
+    :stream_generate_content
   end
 
-  def get_next_chat_message(&chunk_received_handler)
+  def configuration_error
+    ::OpenAI::ConfigurationError
+  end
+
+  def set_client_config(config)
+    @client_config = {
+      contents: config[:messages] #,
+      # Systeem instruction is not working well on gem 'gemini-ai'
+      #system_instruction: system_message(config[:instructions])
+    }
+  end
+
+  def get_oneoff_message(instructions, messages, params = {})
+    set_client_config(
+      messages: preceding_messages,
+      #instructions: system_message,
+    )
+
+    response = @client.send(client_method_name, @client_config)
+    response.dig("candidates",0,"content","parts",0,"text")
+  end
+
+  def get_next_chat_message(&chunk_handler)
+    set_client_config(
+      messages: preceding_messages,
+      #instructions: system_message,
+    )
+
     begin
       # Systeem instruction is not working well on gem 'gemini-ai'
       #response = @client.stream_generate_content({contents: preceding_messages,system_instruction: system_message})
-      response = @client.stream_generate_content({contents: preceding_messages})
+      #response = @client.stream_generate_content({contents: preceding_messages})
+      response = @client.send(client_method_name, @client_config) do |event, parsed, raw|
+        yield event["candidates"][0]["content"]["parts"][0]["text"]
+      end
     rescue ::Faraday::UnauthorizedError => e
       puts e.message
-      raise Faraday::UnauthorizedError
+      raise OpenAI::ConfigurationError
     end
-    return response.map { |h| h["candidates"][0]["content"]["parts"][0]["text"] }
+    return nil
   end
 
   private
