@@ -39,6 +39,7 @@ class MessagesController < ApplicationController
   end
 
   def create
+    puts "Create a new Message"
     if params[:prompt_index].present?
       last_prompt = false
       current_prompt = Prompt.find(params[:prompt_index])
@@ -69,10 +70,12 @@ class MessagesController < ApplicationController
     @message = @assistant.messages.new(message_params)
 
     if @message.save
+      puts "Message were created"
       if params[:prompt_index].present?
         @message.conversation.state["prompt_index"] = next_prompt.id
         @message.conversation.state["last_prompt"] = last_prompt
         @message.conversation.save
+        puts "Conversation were created/updated: "+@message.conversation.inspect
       end
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
       GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
