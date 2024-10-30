@@ -131,8 +131,10 @@ class MessagesController < ApplicationController
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
 
     @message = @assistant.messages.new(content_text: prompt_instructions)
+    puts "We are starting a New Process with the Prompt: "+prompt_instructions.to_s
 
     if @message.save
+      puts "Message were saved"
       @message.conversation.state["prompt_index"] = prompt_index
       @message.conversation.state["last_prompt"] = last_prompt
       @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id if google_sheet_1_id != nil
@@ -140,6 +142,7 @@ class MessagesController < ApplicationController
       @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
       @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
       @message.conversation.save
+      puts "Conversation were updated: "+@message.conversation.inspect
       after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
       GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
       redirect_to conversation_messages_path(@message.conversation, version: @message.version)
