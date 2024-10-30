@@ -70,8 +70,8 @@ class AIBackend::Gemini
       response = @client.send(client_method_name, @client_config) do |event, parsed, raw|
         puts "Event from Gemini"
         puts event.inspect
-        if event["candidates"][0]["content"].present? && event["candidates"][0]["content"]["parts"].present?
-          yield event["candidates"][0]["content"]["parts"][0]["text"] 
+        if event.dig("candidates",0,"content","parts",0,"text") != nil
+          yield event.dig("candidates",0,"content","parts",0,"text")
         end
       end
     rescue ::Faraday::UnauthorizedError => e
