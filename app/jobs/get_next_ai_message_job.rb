@@ -16,7 +16,8 @@ class GetNextAIMessageJob < ApplicationJob
     end
   end
 
-  def perform(user_id, message_id, assistant_id, attempt = 1)
+  def perform(user_id, message_id, assistant_id)
+    attempt = 1
     puts "\n### GetNextAIMessageJob.perform(#{user_id}, #{message_id}, #{assistant_id}, #{attempt})" unless Rails.env.test?
 
     @user         = User.find(user_id)
