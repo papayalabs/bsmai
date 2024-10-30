@@ -40,6 +40,7 @@ class MessagesController < ApplicationController
 
   def create
     puts "Create a new Message"
+    puts message_params.inspect
     if params[:prompt_index].present?
       last_prompt = false
       current_prompt = Prompt.find(params[:prompt_index])
@@ -133,7 +134,9 @@ class MessagesController < ApplicationController
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
 
-    @message = @assistant.messages.new(content_text: prompt_instructions)
+    @message = @assistant.messages.new(message_params)
+    @message.content_text = prompt_instructions
+
     puts "We are starting a New Process with the Prompt: "+prompt_instructions.to_s
 
     if @message.save
