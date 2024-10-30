@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
  # include Authenticate
+  protect_from_forgery with: :null_session
   before_action :set_current_user
   helper_method [:current_user]
 
