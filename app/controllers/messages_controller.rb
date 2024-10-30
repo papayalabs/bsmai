@@ -134,7 +134,10 @@ class MessagesController < ApplicationController
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
 
-    @message = @assistant.messages.new(message_params)
+    @message = @assistant.messages.new
+    @message.index = ""
+    @message.version = ""
+    @message.conversation_id = ""
     @message.content_text = prompt_instructions
 
     puts "We are starting a New Process with the Prompt: "+prompt_instructions.to_s
