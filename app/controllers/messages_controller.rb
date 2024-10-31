@@ -212,11 +212,15 @@ class MessagesController < ApplicationController
   end
 
   def get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_id,doc_number)
-    drive = Google::Apis::DriveV3::DriveService.new
-    drive.key = "AIzaSyA3_3KUVPruooI3M0lpzoG-yBKcm3i0jJQ"
-    txt = drive.export_file(google_doc_id,"text/plain")
-    prompt_instructions.gsub!("[DOC"+doc_number.to_s+"]",txt)
-    prompt_instructions
+    begin
+      drive = Google::Apis::DriveV3::DriveService.new
+      drive.key = "AIzaSyA3_3KUVPruooI3M0lpzoG-yBKcm3i0jJQ"
+      txt = drive.export_file(google_doc_id,"text/plain")
+      prompt_instructions.gsub!("[DOC"+doc_number.to_s+"]",txt)
+      prompt_instructions
+    rescue StandardError => e
+      return "Prompt Instructions Runtime Error: "+e.message.to_s
+    end
   end
 
   private
