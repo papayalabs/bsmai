@@ -70,6 +70,7 @@ class AIBackend::Gemini
       response = @client.send(client_method_name, @client_config) do |event, parsed, raw|
         puts "Event from Gemini"
         puts event.inspect
+        sleep(0.1)
         if event.dig("candidates",0,"content","parts",0,"text") != nil
           yield event.dig("candidates",0,"content","parts",0,"text")
         end
