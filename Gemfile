@@ -7,7 +7,7 @@ ruby "3.2.0"
 gem "rails", "~> 7.1.3"
 gem "sprockets-rails" # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "pg", "~> 1.1"
-gem "puma", ">= 5.0"
+gem "puma", ">= 6.0"
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "turbo-rails", "~> 2.0.5"
 gem "stimulus-rails"
@@ -43,9 +43,9 @@ gem "solid_queue", "~> 0.6.0"
 gem "name_of_person"
 gem "actioncable-enhanced-postgresql-adapter" # longer paylaods w/ postgresql actioncable
 
-group :production do
-  gem "puma-daemon"
-end
+#group :production do
+#  gem "puma-daemon"
+#end
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
