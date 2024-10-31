@@ -71,15 +71,17 @@ class MessagesController < ApplicationController
     @message = @assistant.messages.new(message_params)
 
     if @message.save
-      puts "Message were created"
-      if params[:prompt_index].present?
-        @message.conversation.state["prompt_index"] = next_prompt.id
-        @message.conversation.state["last_prompt"] = last_prompt
-        @message.conversation.save
-        puts "Conversation were created/updated: "+@message.conversation.inspect
+      unless params[:message][:content_text].include?("Prompt Instructions Runtime Error:")
+        puts "Message were created"
+        if params[:prompt_index].present?
+          @message.conversation.state["prompt_index"] = next_prompt.id
+          @message.conversation.state["last_prompt"] = last_prompt
+          @message.conversation.save
+          puts "Conversation were created/updated: "+@message.conversation.inspect
+        end
+        after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
+        GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
       end
-      after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
-      GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
       redirect_to conversation_messages_path(@message.conversation, version: @message.version)
     else
       # what's the right flow for a failed message create? it's not this, but hacking it so tests pass until we have a plan
@@ -144,16 +146,18 @@ class MessagesController < ApplicationController
 
     if @message.save
       puts "Message were saved"
-      @message.conversation.state["prompt_index"] = prompt_index
-      @message.conversation.state["last_prompt"] = last_prompt
-      @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id if google_sheet_1_id != nil
-      @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id if google_sheet_2_id != nil
-      @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
-      @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
-      @message.conversation.save
-      puts "Conversation were updated: "+@message.conversation.inspect
-      after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
-      GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
+      unless prompt_instructions.include? "Prompt Instructions Runtime Error:"
+        @message.conversation.state["prompt_index"] = prompt_index
+        @message.conversation.state["last_prompt"] = last_prompt
+        @message.conversation.state["google_sheet_1_id"] = google_sheet_1_id if google_sheet_1_id != nil
+        @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id if google_sheet_2_id != nil
+        @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
+        @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
+        @message.conversation.save
+        puts "Conversation were updated: "+@message.conversation.inspect
+        after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
+        GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id) 
+      end
       redirect_to conversation_messages_path(@message.conversation, version: @message.version)
     else
       # what's the right flow for a failed message create? it's not this, but hacking it so tests pass until we have a plan
@@ -167,24 +171,42 @@ class MessagesController < ApplicationController
 
   def get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
     url = 'https://docs.google.com/spreadsheets/d/'+google_sheet_1_id+'/export?format=xlsx'
-    xls = Roo::Spreadsheet.open(url, extension: :xlsx)
+    begin
+      xls = Roo::Spreadsheet.open(url, extension: :xlsx)
+    rescue StandardError => e
+      return "Prompt Instructions Runtime Error: "+e.message.to_s
+    end
 
     puts prompt_instructions.inspect
     tags = prompt_instructions.scan(/\[SHEET1,(\w+)\,(\d+)\]/)
     puts tags.inspect
     tags.each do |tag|
-      prompt_instructions.gsub!("[SHEET1,"+tag[0]+","+tag[1]+"]",xls.sheet(0).cell(tag[0],tag[1].to_i).to_s)
+      cell_content = xls.sheet(0).cell(tag[0],tag[1].to_i)
+      if cell_content.present?
+        prompt_instructions.gsub!("[SHEET1,"+tag[0]+","+tag[1]+"]",cell_content)
+      else
+        return "Prompt Instructions Runtime Error: Unable to run next prompt, [SHEET1,"+tag[0]+","+tag[1]+"]  is missing content. Please update before continuing"
+      end
     end
     prompt_instructions
   end
 
   def get_prompt_instructions_with_google_sheet_2(prompt_instructions,google_sheet_2_id)
     url = 'https://docs.google.com/spreadsheets/d/'+google_sheet_2_id+'/export?format=xlsx'
-    xls = Roo::Spreadsheet.open(url, extension: :xlsx)
+    begin
+      xls = Roo::Spreadsheet.open(url, extension: :xlsx)
+    rescue StandardError => e
+      return "Prompt Instructions Runtime Error: "+e.message.to_s
+    end
 
     tags = prompt_instructions.scan(/\[SHEET2,(\w+)\,(\d+)\]/)
     tags.each do |tag|
-      prompt_instructions.gsub!("[SHEET2,"+tag[0]+","+tag[1]+"]",xls.sheet(0).cell(tag[0],tag[1].to_i).to_s)
+      cell_content = xls.sheet(0).cell(tag[0],tag[1].to_i)
+      if cell_content.present?
+        prompt_instructions.gsub!("[SHEET2,"+tag[0]+","+tag[1]+"]",cell_content)
+      else
+        return "Prompt Instructions Runtime Error: Unable to run next prompt, [SHEET2,"+tag[0]+","+tag[1]+"]  is missing content. Please update before continuing"
+      end
     end
     prompt_instructions
   end
