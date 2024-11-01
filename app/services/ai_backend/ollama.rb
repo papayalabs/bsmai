@@ -18,7 +18,7 @@ class AIBackend::Ollama
     begin
       #@client = self.class.client.new(access_token: user.openai_key)
       @client = self.class.client.new(
-        credentials: { address: 'http://localhost:11434' },
+        credentials: { address: assistant.api_url },
         options: { server_sent_events: true }
       )
     rescue ::Faraday::UnauthorizedError => e

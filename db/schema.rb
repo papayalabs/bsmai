@@ -57,6 +57,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.jsonb "tools", default: [], null: false
     t.boolean "images", default: false, null: false
     t.string "api_key"
+    t.string "api_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_assistants_on_user_id"
