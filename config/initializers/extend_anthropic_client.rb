@@ -29,7 +29,7 @@ Rails.application.config.to_prepare do
       end
 
       error_codes = {
-        400 => "invalid_request_error: There was an issue with the format or content of your request.",
+        400 => "invalid_request_error: There was an issue with the format or content of your request. Or your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits",
         401 => "authentication_error: There's an issue with your API key.",
         403 => "permission_error: Your API key does not have permission to use the specified resource.",
         404 => "not_found_error: The requested resource was not found.",
