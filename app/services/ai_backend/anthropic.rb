@@ -1,4 +1,4 @@
-class AIBackends::Anthropic
+class AIBackend::Anthropic
   attr :client
 
   # Rails system tests don't seem to allow mocking because the server and the
