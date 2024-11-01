@@ -11,7 +11,7 @@ class GetNextAIMessageJob < ApplicationJob
       AIBackend::Ollama
     elsif @assistant.name.include?('Gemini')
       AIBackend::Gemini
-    else
+    elsif @assistant.name.include?('Claude')
       AIBackend::Anthropic
     end
   end
