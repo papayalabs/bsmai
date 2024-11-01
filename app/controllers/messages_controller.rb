@@ -117,20 +117,36 @@ class MessagesController < ApplicationController
     prompt_instructions = prompt.instructions
     google_sheet_1_id,google_sheet_2_id,google_doc_1_id,google_doc_2_id = nil,nil,nil,nil
     if params[:google_sheet_1_url].present?
-      google_sheet_1_id = params[:google_sheet_1_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
-      prompt_instructions = get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
+      if params[:google_sheet_1_url].include?("docs.google.com/spreadsheets/d/")
+        google_sheet_1_id = params[:google_sheet_1_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
+        prompt_instructions = get_prompt_instructions_with_google_sheet_1(prompt_instructions,google_sheet_1_id)
+      else
+        prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
+      end
     end
     if params[:google_sheet_2_url].present?
-      google_sheet_2_id = params[:google_sheet_2_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
-      prompt_instructions = get_prompt_instructions_with_google_sheet_2(prompt_instructions,google_sheet_2_id)
+      if params[:google_sheet_2_url].include?("docs.google.com/spreadsheets/d/")
+        google_sheet_2_id = params[:google_sheet_2_url].split("docs.google.com/spreadsheets/d/")[1].split("/")[0].to_s
+        prompt_instructions = get_prompt_instructions_with_google_sheet_2(prompt_instructions,google_sheet_2_id)
+      else
+        prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
+      end
     end
     if params[:google_doc_1_url].present?
-      google_doc_1_id = params[:google_doc_1_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
-      prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_1_id,1)
+      if params[:google_doc_1_url].include?("docs.google.com/document/d/")
+        google_doc_1_id = params[:google_doc_1_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
+        prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_1_id,1)
+      else
+        prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
+      end
     end
     if params[:google_doc_2_url].present?
-      google_doc_2_id = params[:google_doc_2_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
-      prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_2_id,2)
+      if params[:google_doc_2_url].include?("docs.google.com/document/d/")
+        google_doc_2_id = params[:google_doc_2_url].split("docs.google.com/document/d/")[1].split("/")[0].to_s
+        prompt_instructions = get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_2_id,2)
+      else
+        prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
+      end
     end
     @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
@@ -156,7 +172,7 @@ class MessagesController < ApplicationController
         @message.conversation.save
         puts "Conversation were updated: "+@message.conversation.inspect
         after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
-        GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id) 
+        GetNextAIMessageJob.perform_later(Current.user.id, after_create_assistant_reply.id, @assistant.id)
       end
       redirect_to conversation_messages_path(@message.conversation, version: @message.version)
     else
