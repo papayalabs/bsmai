@@ -44,7 +44,7 @@
       <% end %>
 
       <div class="dropdown !inline-flex dropdown-end outline-none pr-2">
-        <%= icon "x-mark",
+        <%= icon "chevron-down",
           tabindex: 0,
           role: :button,
           variant: :outline,
@@ -56,9 +56,9 @@
           |,
           data: {
             controller: "nested-pointer",
-            role: "delete"
+            role: "options"
           },
-          title: "Delete",
+          title: "Options",
           tooltip: :top
         %>
 
@@ -76,6 +76,21 @@
               class: "flex gap-2 w-full py-2 px-4" do
             %>
               <%= icon "trash", variant: :outline, size: 18 %>Delete
+            <% end %>
+          </li>
+          <li>
+            <%= button_to duplicate_prompt_editor_prompt_process_path(@prompt_process),
+              method: :get,
+              data: {
+                role: "duplicate",
+              },
+              form: {
+                class: "inline-block p-0",
+                data: { turbo_frame: "_top" },
+              },
+              class: "flex gap-2 w-full py-2 px-4" do
+            %>
+              <%= icon "document", variant: :outline, size: 18 %>Duplicate
             <% end %>
           </li>
         </menu>

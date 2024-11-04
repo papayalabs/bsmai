@@ -1,5 +1,5 @@
 class PromptEditor::PromptProcessesController < PromptEditor::ApplicationController
-  before_action :set_prompt_process, only: [:show, :edit, :update, :destroy]
+  before_action :set_prompt_process, only: [:show, :edit, :update, :destroy,:duplicate]
 
   def index
     @prompt_processes = PromptProcess.where("id > 0").order(updated_at: :desc)
@@ -46,6 +46,20 @@ class PromptEditor::PromptProcessesController < PromptEditor::ApplicationControl
   def destroy
     @prompt_process.destroy!
     redirect_to  prompt_editor_prompts_path(:prompt_process_id => PromptProcess.first), notice: "Deleted", status: :see_other
+  end
+
+  def duplicate
+    prompt_process = @prompt_process.dup
+    if prompt_process.save
+      @prompt_process.prompts.each do |prompt|
+        prompt_dup = prompt.dup
+        prompt_dup.prompt_process_id = prompt_process.id
+        unless prompt_dup.save
+          redirect_to prompt_editor_prompts_path, status: :see_other, alert: "Error duplicated prompts"
+        end
+      end 
+      redirect_to prompt_editor_prompts_path, status: :see_other, alert: "The Prompt Process has been duplicated"
+    end
   end
 
   private

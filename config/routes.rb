@@ -10,6 +10,9 @@ Rails.application.routes.draw do
       collection do
         get "create_new_prompt_process"
       end
+      member do 
+        get "duplicate"
+      end
     end
   end
 
