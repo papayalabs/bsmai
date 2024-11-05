@@ -19,11 +19,13 @@
     <div style="padding:15px;">
       <button type="button" data-action="modal#close" class="absolute top-4 right-4">X</button>
       <%= form_tag("/start_new_process", :method => "get", :remote => true) do %>
-        </br>
-        <h1>Enter the Process yoo want to run</h1>
+        <h1>Enter the Process you want to run and the name</h1>
         <hr>
         </br>
         <%= select_tag "prompt_process_id", options_for_select(PromptProcess.all.collect { | prompt_process | [prompt_process.name, prompt_process.id] }), include_blank: "Select Process...", class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+        </br>
+        <%= text_field_tag "conversation_process_name", "New Chat", class: "text-gray-950", style: "width:570px" %>
+        </br>
         </br>
         <h1>Enter your Google Sheets and Documents URL</h1>
         <hr>

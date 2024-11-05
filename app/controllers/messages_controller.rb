@@ -148,6 +148,7 @@ class MessagesController < ApplicationController
         prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
       end
     end
+    conversation_process_name = params[:conversation_process_name]
     @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
@@ -169,6 +170,7 @@ class MessagesController < ApplicationController
         @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id if google_sheet_2_id != nil
         @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
         @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
+        @message.conversation.title = conversation_process_name if conversation_process_name != nil
         @message.conversation.save
         puts "Conversation were updated: "+@message.conversation.inspect
         after_create_assistant_reply = @message.conversation.latest_message_for_version(@message.version)
