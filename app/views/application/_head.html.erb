@@ -27,38 +27,4 @@
   <%= render 'application/head/meta_tags' %>
   <%= content_for :head %>
 </head>
-<div id="preloader">
-  <div id="camera"></div>
-</div>
-<style>
-  body {
-    overflow: hidden
-  }
-  #preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url( https://bsmai.s3.us-east-2.amazonaws.com/background.jpg );
-    z-index: 99; /* makes sure it stays on top */
-  }
-  #camera {
-    width: 300px;
-    height: 300px;
-    position: absolute;
-    left: 50%; /* centers the loading animation horizontally one the screen */
-    top: 50%; /* centers the loading animation vertically one the screen */
-    background-image: url( https://bsmai.s3.us-east-2.amazonaws.com/loader.gif ); /* path to your loading animation */
-    background-repeat: no-repeat;
-    background-position: center;
-    margin: -150px 0 0 -150px /* is width and height divided by two */
-  }
-</style>
-<script>
-  $(window).on( 'load', function() { // makes sure the whole site is loaded 
-    $( '#camera' ).delay( 350 ).fadeOut( 'slow' ); // will first fade out the loading animation 
-    $( '#preloader' ).delay( 350 ).fadeOut( 'slow' ); // will fade out the white DIV that covers the website. 
-    $( 'body' ).delay( 550 ).css( { 'overflow': 'visible' } );
-  })
-</script>
+
