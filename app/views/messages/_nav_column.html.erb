@@ -15,7 +15,7 @@
               rounded-lg py-3 px-5
               cursor-pointer">Start New Process</button>
 
-  <dialog data-modal-target="dialog" style="width:600px">
+  <dialog data-modal-target="dialog" style="width:600px;background-color: black;color: white">
     <div style="padding:15px;">
       <button type="button" data-action="modal#close" class="absolute top-4 right-4">X</button>
       <%= form_tag("/start_new_process", :method => "get", :remote => true) do %>

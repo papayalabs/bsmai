@@ -5,11 +5,11 @@ class ApplicationController < ActionController::Base
   helper_method [:current_user]
 
   def current_user
-    @current_user = User.last
+    @current_user = User.first
   end
 
   def set_current_user
-    Current.user = User.last
+    Current.user = User.first
     if PromptProcess.all.count == 0
       PromptProcess.create!(:name => "New Process")
     end
