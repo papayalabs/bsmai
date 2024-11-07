@@ -149,7 +149,7 @@ class MessagesController < ApplicationController
       end
     end
     conversation_process_name = params[:conversation_process_name]
-    @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
+    @assistant = Assistant.find_by(id: params[:assistant_id])
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
 
@@ -252,7 +252,7 @@ class MessagesController < ApplicationController
   end
 
   def set_assistant
-    @assistant = Current.user.assistants.find_by(id: params[:assistant_id])
+    @assistant = Assistant.find_by(id: params[:assistant_id])
     @assistant ||= @conversation.latest_message_for_version(@version).assistant
   end
 
@@ -265,7 +265,7 @@ class MessagesController < ApplicationController
   end
 
   def set_nav_assistants
-    @nav_assistants = Current.user.assistants.ordered
+    @nav_assistants = Assistant.ordered
   end
 
   def message_params

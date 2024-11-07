@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
   end
 
   create_table "assistants", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.bigint "user_id", null: true
     t.string "model"
     t.string "name"
     t.string "description"
