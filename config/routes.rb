@@ -36,10 +36,10 @@ Rails.application.routes.draw do
 
   resources :chats, only: [:index, :show, :create]
 
-  get "/login", to: "assistants#index" #"sessions#new"
-  post "/login", to: "assistants#index" #"sessions#create"
-  get "/register", to: "assistants#index" #"users#new"
-  get "/logout", to: "assistants#index" #"sessions#destroy"
+  get "/login", to: "sessions#new"
+  post "/login", to: "sessions#create"
+  get "/register", to: "users#new"
+  get "/logout", to: "sessions#destroy"
 
   get "/start_new_process", to: "messages#start_new_process"
 
