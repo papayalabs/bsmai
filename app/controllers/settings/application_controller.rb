@@ -1,6 +1,6 @@
 class Settings::ApplicationController < ApplicationController
   layout "settings"
-  before_action :set_settings_menu
+  before_action :set_settings_menu, :admin_authorization
 
   private
 
@@ -17,5 +17,11 @@ class Settings::ApplicationController < ApplicationController
         'Users': settings_users_path
       }
     }
+  end
+
+  def admin_authorization
+    if Current.user.role != "admin"
+      redirect_to root_path, notice: "Your are not authorized", status: :see_other
+    end
   end
 end
