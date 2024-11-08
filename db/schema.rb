@@ -134,15 +134,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.index ["parent_id"], name: "index_notes_on_parent_id"
   end
 
-  create_table "people", force: :cascade do |t|
-    t.string "personable_type"
-    t.bigint "personable_id"
-    t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["personable_type", "personable_id"], name: "index_people_on_personable"
-  end
-
   create_table "prompt_processes", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -328,10 +319,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.index ["assistant_id"], name: "index_steps_on_assistant_id"
     t.index ["conversation_id"], name: "index_steps_on_conversation_id"
     t.index ["run_id"], name: "index_steps_on_run_id"
-  end
-
-  create_table "tombstones", force: :cascade do |t|
-    t.datetime "erected_at"
   end
 
   create_table "users", force: :cascade do |t|
