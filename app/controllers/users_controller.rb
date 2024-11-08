@@ -21,10 +21,10 @@ class UsersController < ApplicationController
     @user.active = false
 
     if @user.save
-      reset_session
-      login_as @user
-
-      redirect_to root_path
+      #reset_session
+      #login_as @user
+      flash.now[:alert] = "Your User was created. Now you need that Admin activated"
+      render "sessions/new", status: :unprocessable_entity
     else
       render :new, status: :unprocessable_entity
     end
