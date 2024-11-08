@@ -339,7 +339,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.datetime "registered_at", default: -> { "CURRENT_TIMESTAMP" }
     t.string "first_name"
     t.string "last_name"
+    t.string "email"
     t.jsonb "preferences"
+    t.integer "role"
+    t.boolean "active", null: false, default: false
     t.bigint "last_cancelled_message_id"
     t.index ["last_cancelled_message_id"], name: "index_users_on_last_cancelled_message_id"
   end

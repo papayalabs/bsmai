@@ -7,20 +7,25 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:update]
 
   def new
-    @person = Person.new
-    @person.personable = User.new
+    @user = User.new
   end
 
   def create
-    @person = Person.new(person_params)
+    if params[:user][:name].present?
+      params[:user][:first_name] = params[:user][:name].split(" ")[0]
+      params[:user][:last_name] = params[:user][:name].split(" ")[1]
+    end
 
-    if @person.save
+    @user = User.new(user_params)
+    @user.role = :user
+    @user.active = false
+
+    if @user.save
       reset_session
-      login_as @person.user
+      login_as @user
 
       redirect_to root_path
     else
-      @person.errors.delete :personable
       render :new, status: :unprocessable_entity
     end
   end
@@ -40,14 +45,8 @@ class UsersController < ApplicationController
     @user = Current.user if params[:id].to_i == Current.user.id
   end
 
-  def person_params
-    params.require(:person).permit(:email, :personable_type, personable_attributes: [
-      :name, :password
-    ])
-  end
-
   def user_params
-    params.require(:user).permit(preferences: [:nav_closed, :dark_mode])
+    params.require(:user).permit(:id, :email, :first_name,:last_name,:password, :role,:active, preferences: [:nav_closed, :dark_mode])
   end
 
   def ensure_registration

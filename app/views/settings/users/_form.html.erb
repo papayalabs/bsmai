@@ -1,0 +1,56 @@
+<%= form_with(model: [:settings, user], class: "contents") do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+        <% user.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <%= form.hidden_field :id %>
+    <div class="my-5">
+      <%= form.label :email %>
+      <%= form.text_field :email, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :first_name %>
+      <%= form.text_field :first_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :last_name %>
+      <%= form.text_field :last_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :password %>
+      <%= form.text_field :password, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :role %>
+      <%= form.select :role, @roles, {}, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :active %>
+      <%= form.check_box :active, {}, form.object.active == 0 ? false : true %>
+    </div>
+
+
+  <%= form.submit "Save",
+    class: %|
+      inline-block font-bold
+      bg-gray-200 dark:bg-gray-900
+      border border-gray-400
+      rounded-lg py-3 px-5
+      cursor-pointer
+    |,
+    data: { turbo_submits_with: "Saving..." }
+  %>
+<% end %>
