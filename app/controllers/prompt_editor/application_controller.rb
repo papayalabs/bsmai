@@ -9,7 +9,7 @@ class PromptEditor::ApplicationController < ApplicationController
     @settings_menu = {
       new_prompt_process: {
         #'Account': edit_settings_person_path,
-        'Create New Process': create_new_prompt_process_prompt_editor_prompt_processes_path
+        'Create New Process': new_prompt_editor_prompt_process_path
       },
 
       prompt_processes: PromptProcess.all.map {

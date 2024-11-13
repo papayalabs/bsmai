@@ -7,9 +7,6 @@ Rails.application.routes.draw do
   namespace :prompt_editor do
     resources :prompts
     resources :prompt_processes do
-      collection do
-        get "create_new_prompt_process"
-      end
       member do 
         get "duplicate"
       end
