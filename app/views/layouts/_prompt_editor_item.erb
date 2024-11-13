@@ -6,20 +6,27 @@
   <% @prompt_process = item %>
   <%= render "prompt_editor/prompt_processes/prompt_process" %>
 <% else %>
-  <div>
-    <%= link_to link,
-          class: %| inline-block font-bold
-              bg-gray-200 dark:bg-gray-900
-              border border-gray-400
-              rounded-lg py-3 px-5
-              cursor-pointer,
-            #{selected && "cursor-default" }
-          |,
-          data: { role: "name" } do
-    %>
-      <span>
-        <%= item.name %>
-      </span>
-    <% end %>
+  <div data-controller="modal">
+    <button data-action="modal#open" class="inline-block font-bold
+                bg-gray-200 dark:bg-gray-900
+                border border-gray-400
+                rounded-lg py-3 px-5
+                cursor-pointer">Create New Process</button>
+
+    <dialog data-modal-target="dialog" style="width:600px;background-color: black;color: white">
+      <div style="padding:15px;">
+        <button type="button" data-action="modal#close" class="absolute top-4 right-4">X</button>
+        <%= form_tag(new_prompt_editor_prompt_process_path, :method => :get, :remote => true) do %>
+          <h1>Enter the name of the Process</h1>
+          <hr>
+          </br>
+          <%= text_field_tag "process_name", "New Process", class: "text-gray-950", style: "width:570px" %>
+          </br>
+          </br>
+          <%= submit_tag "Create Process", class: "bg-transparent text-white-700 font-semibold py-2 px-4 border border-gray-500 rounded cursor-pointer" %>
+          <!-- button type="button" class="bg-transparent hover:bg-white-500 text-white-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded">Send</butto -->
+        <% end %>
+      </div>
+    </dialog>
   </div>
 <% end %>
