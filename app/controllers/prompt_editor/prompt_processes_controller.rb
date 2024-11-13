@@ -12,12 +12,14 @@ class PromptEditor::PromptProcessesController < PromptEditor::ApplicationControl
   end
 
   def new
-    @prompt_process = PromptProcess.new
-    @prompt_process.name = "New Process"
-    if @prompt_process.save
-      redirect_to prompt_editor_prompts_path(:prompt_process_id => @prompt_process.id), notice: "Created", status: :see_other
-    else
-      render :new, status: :unprocessable_entity
+    if params[:process_name].present?
+      @prompt_process = PromptProcess.new
+      @prompt_process.name = params[:process_name]
+      if @prompt_process.save
+        redirect_to prompt_editor_prompts_path(:prompt_process_id => @prompt_process.id), notice: "Created", status: :see_other
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
