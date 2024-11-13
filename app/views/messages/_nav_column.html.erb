@@ -15,7 +15,7 @@
               rounded-lg py-3 px-5
               cursor-pointer">Start New Process</button>
 
-  <dialog data-modal-target="dialog" style="width:600px">
+  <dialog data-modal-target="dialog" style="width:600px;background-color: black;color: white">
     <div style="padding:15px;">
       <button type="button" data-action="modal#close" class="absolute top-4 right-4">X</button>
       <%= form_tag("/start_new_process", :method => "get", :remote => true) do %>
@@ -42,7 +42,7 @@
         <%= text_field_tag "google_doc_1_url", nil, class: "text-gray-950", style: "width:570px" %>
         </br>
         </br>
-        <%= label_tag("google_doc_2_url", "SEPT Analysis Doc - [DOC2]:") %>
+        <%= label_tag("google_doc_2_url", "SERP Analysis Doc - [DOC2]:") %>
         <%= text_field_tag "google_doc_2_url", nil, class: "text-gray-950", style: "width:570px" %>
         </br>
         </br>
