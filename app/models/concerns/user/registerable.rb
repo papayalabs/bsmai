@@ -1,9 +1,9 @@
 module User::Registerable
   extend ActiveSupport::Concern
 
-  included do
-    after_create :create_initial_assistants
-  end
+  #included do
+  #  after_create :create_initial_assistants
+  #end
 
   private
 

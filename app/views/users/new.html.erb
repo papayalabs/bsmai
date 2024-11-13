@@ -1,13 +1,15 @@
 <div class='flex flex-col items-center justify-center w-full h-screen space-y-4'>
 
-  <%= image_tag("logo.svg", height: "32", width: "32", class:"text-black dark:text-brand-blue") %>
+  <div class="p-3 bg-black rounded-full">
+    <%= image_tag("bsmai.png", width: "144", height: "144", class: "text-gray-950") %>
+  </div>
 
   <h2 class='text-3xl font-semibold'>Create your account</h2>
 
-  <% if @person.errors.any? %>
+  <% if @user.errors.any? %>
     <div id="error_explanation" class="px-3 py-2 mt-3 font-medium text-red-500 rounded-lg bg-red-50">
       <ul>
-        <% @person.errors.full_messages.reverse.each do |error| # We want the User error first %>
+        <% @user.errors.full_messages.reverse.each do |error| # We want the User error first %>
           <li><%= error.gsub('Personable ','').capitalize %><%# Cleanup "Personable password is ..." %></li>
         <% end %>
       </ul>
@@ -20,7 +22,7 @@
   </span>
 
   <%= form_with method: :post,
-        model: @person,
+        model: @user,
         url: users_path,
         class: "flex flex-col space-y-4 w-80",
         data: {
@@ -28,7 +30,6 @@
           transition_toggle_class: "max-h-0 max-h-40"
         } do
   |f| %>
-    <%= f.hidden_field :personable_type, id: "personable_type", value: "User" %>
 
     <%= f.label :email, class: "input input-bordered flex items-center justify-between" do %>
       <span>Email <span class="">*</span></span>
@@ -39,33 +40,32 @@
       %>
     <% end %>
 
-    <%= f.fields_for :personable_attributes, @person.personable do |user_fields| %>
-        <%= user_fields.label :password, class: "input input-bordered flex items-center justify-between" do %>
-          <span>Password <span class="">*</span></span>
-          <%= user_fields.password_field :password,
-            placeholder: "Password",
-            class: "w-44 border-0 dark:text-black",
-            data: { action: "focus->transition#toggleClassOn" }
-          %>
-        <% end %>
-
-        <div class="
-                    <%= @person.errors.any? ? 'max-h-40' : 'max-h-0' %> overflow-hidden
-                    flex flex-col
-                    transition-all duration-100 ease-in
-                    space-y-4
-                    "
-            data-transition-target="transitionable">
-
-          <%= user_fields.label :name, class: "input input-bordered flex items-center justify-between" do %>
-            <span>Full Name <span class="">*</span></span>
-            <%= user_fields.text_field :name,
-              placeholder: "First & Last name",
-              class: "w-44 border-0 dark:text-black"
-            %>
-          <% end %>
-        </div>
+    <%= f.label :password, class: "input input-bordered flex items-center justify-between" do %>
+      <span>Password <span class="">*</span></span>
+      <%= f.password_field :password,
+        placeholder: "Password",
+        class: "w-44 border-0 dark:text-black",
+        data: { action: "focus->transition#toggleClassOn" }
+      %>
     <% end %>
+
+    <div class="
+                <%= @user.errors.any? ? 'max-h-40' : 'max-h-0' %> overflow-hidden
+                flex flex-col
+                transition-all duration-100 ease-in
+                space-y-4
+                "
+        data-transition-target="transitionable">
+
+      <%= f.label :name, class: "input input-bordered flex items-center justify-between" do %>
+        <span>Full Name <span class="">*</span></span>
+        <%= f.text_field :name,
+          placeholder: "First & Last name",
+          class: "w-44 border-0 dark:text-black"
+        %>
+      <% end %>
+    </div>
+
     <%= f.submit "Sign Up",
       class: %|
         text-white font-medium

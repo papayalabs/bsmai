@@ -7,15 +7,21 @@ class SessionsController < ApplicationController
   end
 
   def create
-    person = Person.find_by(email: params[:email].strip.downcase)
+    user = User.find_by(email: params[:email].strip.downcase)
 
-    if person.blank?
+    if user.blank?
       flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity
       return
     end
 
-    @user = person&.personable
+    if user.active == false
+      flash.now[:alert] = "Your User need Activation from Admin"
+      render :new, status: :unprocessable_entity
+      return
+    end
+
+    @user = user
 
     if @user&.authenticate(params[:password])
       reset_session

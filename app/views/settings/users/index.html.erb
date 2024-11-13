@@ -1,0 +1,54 @@
+<turbo-frame id="users">
+  <h1 class="text-3xl">Users</h1>
+
+  <p class="my-8">
+    <%= link_to "Add New",
+      new_settings_user_path, 
+      data: { turbo: false },
+      class: %| inline-block font-bold
+        bg-gray-200 dark:bg-gray-900
+        border border-gray-400
+        rounded-lg py-3 px-5
+        cursor-pointer
+      | %>
+  </p>
+
+  <table id="users" class="w-full table-auto border-b border-gray-300 dark:border-b-0">
+    <tbody>
+      <ul>
+        <li style="padding:15px;" class="bg-gray-200 dark:bg-gray-900">
+          <div style="display:inline-block;width:300px;">Email</div>
+          <div style="display:inline-block;width:250px;">First Name</div>
+          <div style="display:inline-block;width:250px;">Last Name</div>
+          <div style="display:inline-block;width:150px;">Role</div>
+          <div style="display:inline-block;">Active</div>
+        </li>
+      </ul>
+      <ul data-controller="sortable" data-sortable-resource-name-value="user">
+        <% @users.each do |user| %>
+          <li data-sortable-update-url="<%= settings_user_path(user) %>" style="padding:15px;" class="<%= cycle('bg-gray-100 dark:bg-gray-600', 'bg-white dark:bg-gray-900') %> cursor-pointer">
+            <div style="display:inline-block;;width:300px;" class="underline"><%= link_to user.email, edit_settings_user_path(user), data: { turbo: false } %></div>
+            <div style="display:inline-block;width:250px;" ><%= user.first_name %></div>
+            <div style="display:inline-block;width:250px;"><%= user.last_name %></div>
+            <div style="display:inline-block;width:150px;"><%= user.role %></div>
+            <div style="display:inline-block;"><%= user.active %></div>
+          </li>
+        <% end %>
+      </ul>
+    </tbody>
+  </table>
+
+</turbo-frame>
+
+<script>
+  document.addEventListener("turbo:load", () => {
+    document.querySelectorAll("table#users tr[data-href]").forEach(row => {
+      row.addEventListener("click", () => {
+        window.location.href = row.dataset.href;
+      });
+    });
+  });
+</script>
+<style>
+
+</style>

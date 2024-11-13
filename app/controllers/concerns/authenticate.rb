@@ -13,9 +13,6 @@ module Authenticate
 
   def current_user
     Current.user ||= User.find_by(id: session[:current_user_id])
-    Current.person ||= Current.user&.person
-    Current.user = nil if Current.person.nil?
-
     Current.user
   end
 

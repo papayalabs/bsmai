@@ -33,7 +33,7 @@ class ConversationsController < ApplicationController
   end
 
   def set_nav_assistants
-    @nav_assistants = Current.user.assistants.ordered
+    @nav_assistants = Assistant.ordered
   end
 
   def set_conversation

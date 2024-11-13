@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  #skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!
   before_action :set_document, only: [:show, :edit, :update, :destroy]
 
   def index

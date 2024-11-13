@@ -1,6 +1,6 @@
 class PromptEditor::ApplicationController < ApplicationController
   layout "prompt_editor"
-  before_action :set_prompt_editor_menu
+  before_action :set_prompt_editor_menu, :admin_authorization
 
   private
 
@@ -16,5 +16,11 @@ class PromptEditor::ApplicationController < ApplicationController
         |prompt_process| [ prompt_process, edit_prompt_editor_prompt_process_path(prompt_process) ]
       }.to_h,
     }
+  end
+
+  def admin_authorization
+    if Current.user.role != "admin"
+      redirect_to root_path, notice: "Your are not authorized", status: :see_other
+    end
   end
 end

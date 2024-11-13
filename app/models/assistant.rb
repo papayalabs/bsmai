@@ -1,5 +1,5 @@
 class Assistant < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
 
   has_many :conversations, dependent: :destroy
   has_many :documents, dependent: :destroy

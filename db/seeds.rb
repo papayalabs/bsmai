@@ -16,16 +16,9 @@ user.first_name = "Daniel"
 user.last_name = "Burns"
 user.password = "password"
 user.preferences["dark_mode"] = "dark"
-user.save!
-
-
-person = Person.new
-person.email = "daniel@boulderseomarketing.com"
-person.personable_id = user.id
-person.personable_type = "User"
-person.save!
-
-user.person = person
+user.email = "daniel@boulderseomarketing.com"
+user.role = :admin
+user.active = true
 user.save!
 
 puts user.first_name.to_s+" Created"

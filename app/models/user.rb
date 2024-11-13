@@ -1,6 +1,7 @@
 class User < ApplicationRecord
-  include Personable, Registerable
+  include Registerable
   #encrypts :openai_key, :anthropic_key
+  enum role: [:user, :admin]
 
   has_secure_password
   has_person_name

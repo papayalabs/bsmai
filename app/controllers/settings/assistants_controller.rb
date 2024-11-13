@@ -9,7 +9,7 @@ class Settings::AssistantsController < Settings::ApplicationController
   end
 
   def create
-    @assistant = Current.user.assistants.new(assistant_params)
+    @assistant = Assistant.new(assistant_params)
 
     if @assistant.save
       redirect_to edit_settings_assistant_path(@assistant), notice: "Saved"
@@ -34,7 +34,7 @@ class Settings::AssistantsController < Settings::ApplicationController
   private
 
   def set_assistant
-    @assistant = Current.user.assistants.find(params[:id])
+    @assistant = Assistant.find(params[:id])
   end
 
   def assistant_params

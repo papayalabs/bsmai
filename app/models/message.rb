@@ -18,7 +18,7 @@ class Message < ApplicationRecord
   validates :role, presence: true
   validates :content_text, presence: true, unless: :assistant?
   validate  :validate_conversation,  if: -> { conversation.present? && Current.user }
-  validate  :validate_assistant,     if: -> { assistant.present? && Current.user }
+  #validate  :validate_assistant,     if: -> { assistant.present? && Current.user }
 
   after_create :start_assistant_reply, if: :user?
   after_create :set_last_assistant_message, if: :assistant?
@@ -36,9 +36,9 @@ class Message < ApplicationRecord
     errors.add(:conversation, 'is invalid') unless conversation.user == Current.user
   end
 
-  def validate_assistant
-    errors.add(:assistant, 'is invalid') unless assistant.user == Current.user
-  end
+  #def validate_assistant
+    #errors.add(:assistant, 'is invalid') unless assistant.user == Current.user
+  #end
 
   def start_assistant_reply
     m = conversation.messages.create!(
