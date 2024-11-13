@@ -1,12 +1,7 @@
 <header>
   <%= render "layouts/logo_and_drop_down_menu" %>
 </header>
-<div id="assistants" data-controller="radio-behavior" data-radio-behavior-selected-class="relationship">
-  <p class="text-xs font-semibold text-gray-300 text-opacity-1 dark:text-gray-500">Assistants</p>
-  </br>
-  <%= render @nav_assistants %>
-  </br>
-</div>
+
 
 <div data-controller="modal">
   <button data-action="modal#open" class="inline-block font-bold
@@ -53,9 +48,13 @@
     </div>
   </dialog>
 </div>
+</br>
 
-
-
+<div id="assistants" data-controller="radio-behavior" data-radio-behavior-selected-class="relationship">
+  <p class="text-xs font-semibold text-gray-300 text-opacity-1 dark:text-gray-500">Assistants</p>
+  </br>
+  <%= render @nav_assistants %>
+</div>
 
 <section class="text-gray-950 dark:text-gray-100 select-none">
   <turbo-frame  id="conversations"
