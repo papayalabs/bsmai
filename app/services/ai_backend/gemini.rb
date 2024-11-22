@@ -18,8 +18,9 @@ class AIBackend::Gemini
     begin
       @client = self.class.client.new(
         credentials: {
-          service: 'generative-language-api',
-          api_key: assistant.api_key
+          service: "generative-language-api",
+          api_key: assistant.api_key,
+          version: "v1beta"
         },
         options: { model: assistant.model, server_sent_events: true }
       )
