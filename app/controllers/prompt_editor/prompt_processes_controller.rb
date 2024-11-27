@@ -45,7 +45,7 @@ class PromptEditor::PromptProcessesController < PromptEditor::ApplicationControl
         unless prompt_dup.save
           redirect_to prompt_editor_prompts_path, status: :see_other, alert: "Error duplicated prompts"
         end
-      end 
+      end
       redirect_to prompt_editor_prompts_path, status: :see_other, alert: "The Prompt Process has been duplicated"
     end
   end
