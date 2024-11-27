@@ -36,7 +36,7 @@ class GetNextAIMessageJobOpenaiTest < ActiveJob::TestCase
     refute GetNextAIMessageJob.perform_now(@user.id, @message.id, @conversation.assistant.id)
   end
 
-  test "when openai key is blank, a nice error message is displayed" do
+  test "when key is blank, a nice error message is displayed" do
     assistant = @conversation.assistant
     assistant.update!(api_key: "")
 
