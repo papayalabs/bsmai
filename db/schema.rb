@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
   end
 
   create_table "assistants", force: :cascade do |t|
-    t.bigint "user_id", null: true
+    t.bigint "user_id"
     t.string "model"
     t.string "name"
     t.string "description"
@@ -57,10 +57,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.jsonb "tools", default: [], null: false
     t.boolean "images", default: false, null: false
     t.string "api_key"
-    t.string "api_url"
-    t.string "api_protocol"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "api_url"
+    t.string "api_protocol", limit: 255
     t.index ["user_id"], name: "index_assistants_on_user_id"
   end
 
@@ -100,6 +100,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 
+  create_table "general_settings", force: :cascade do |t|
+    t.string "google_api_key"
+    t.string "theme_preference"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "messages", force: :cascade do |t|
     t.bigint "conversation_id"
     t.string "role", null: false
@@ -135,6 +142,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.index ["parent_id"], name: "index_notes_on_parent_id"
   end
 
+  create_table "people", force: :cascade do |t|
+    t.string "personable_type"
+    t.bigint "personable_id"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["personable_type", "personable_id"], name: "index_people_on_personable"
+  end
+
   create_table "prompt_processes", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -146,7 +162,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.string "name"
     t.string "description"
     t.string "instructions"
-    t.integer "position", default: 0
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["prompt_process_id"], name: "index_prompts_on_prompt_process_id"
@@ -322,16 +338,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_30_123336) do
     t.index ["run_id"], name: "index_steps_on_run_id"
   end
 
+  create_table "tombstones", force: :cascade do |t|
+    t.datetime "erected_at"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "password_digest"
     t.datetime "registered_at", default: -> { "CURRENT_TIMESTAMP" }
     t.string "first_name"
     t.string "last_name"
-    t.string "email"
     t.jsonb "preferences"
-    t.integer "role"
-    t.boolean "active", null: false, default: false
     t.bigint "last_cancelled_message_id"
+    t.integer "role"
+    t.boolean "active", default: false, null: false
+    t.string "email", limit: 255
     t.index ["last_cancelled_message_id"], name: "index_users_on_last_cancelled_message_id"
   end
 

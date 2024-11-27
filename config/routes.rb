@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   namespace :settings do
     resources :assistants, except: [:index, :show]
     resources :users
+    resources :general_settings
   end
 
   namespace :prompt_editor do

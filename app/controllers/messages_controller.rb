@@ -232,7 +232,7 @@ class MessagesController < ApplicationController
   def get_prompt_instructions_with_google_doc(prompt_instructions,google_doc_id,doc_number)
     begin
       drive = Google::Apis::DriveV3::DriveService.new
-      drive.key = "AIzaSyA3_3KUVPruooI3M0lpzoG-yBKcm3i0jJQ"
+      drive.key = GeneralSetting.first.google_api_key
       txt = drive.export_file(google_doc_id,"text/plain")
       prompt_instructions.gsub!("[DOC"+doc_number.to_s+"]",txt)
       prompt_instructions

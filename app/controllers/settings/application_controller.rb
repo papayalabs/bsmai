@@ -13,9 +13,12 @@ class Settings::ApplicationController < ApplicationController
         #'New Assistant': new_settings_assistant_path(Assistant.new)
       }),
 
+      general_settings: {
+        'General Settings': edit_settings_general_setting_path(GeneralSetting.first)
+      },
       users: {
         'Users': settings_users_path
-      }
+      },
     }
   end
 
