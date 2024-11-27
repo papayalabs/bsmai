@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   include Registerable
-  #encrypts :openai_key, :anthropic_key
   enum role: [:user, :admin]
 
   has_secure_password

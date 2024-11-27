@@ -16,7 +16,6 @@ class AIBackend::Ollama
 
   def initialize(user, assistant, conversation, message)
     begin
-      #@client = self.class.client.new(access_token: user.openai_key)
       @client = self.class.client.new(
         credentials: { address: assistant.api_url },
         options: { server_sent_events: true }

@@ -37,8 +37,8 @@ class GetNextAIMessageJobOpenaiTest < ActiveJob::TestCase
   end
 
   test "when openai key is blank, a nice error message is displayed" do
-    user = @conversation.user
-    user.update!(openai_key: "")
+    assistant = @conversation.assistant
+    assistant.update!(api_key: "")
 
     assert GetNextAIMessageJob.perform_now(@user.id, @message.id, @conversation.assistant.id)
     assert_includes @conversation.latest_message_for_version(:latest).content_text, "need to enter a valid API key for OpenAI"
