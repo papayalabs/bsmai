@@ -5,13 +5,13 @@ class GetNextAIMessageJob < ApplicationJob
   retry_on WaitForPrevious, wait: ->(run) { (2**run - 1).seconds }, attempts: 3
 
   def ai_backend
-    if @assistant.name.include?('GPT')
+    if @assistant.api_protocol == "OPENAI"
       AIBackend::OpenAI
-    elsif @assistant.name.include?('Ollama')
+    elsif @assistant.api_protocol == "OLLAMA"
       AIBackend::Ollama
-    elsif @assistant.name.include?('Gemini')
+    elsif @assistant.api_protocol == "GEMINI"
       AIBackend::Gemini
-    elsif @assistant.name.include?('Claude')
+    elsif @assistant.api_protocol == "ANTHROPIC"
       AIBackend::Anthropic
     end
   end

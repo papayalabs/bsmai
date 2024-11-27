@@ -39,6 +39,11 @@
     <%= form.text_field :api_url, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
   </div>
 
+  <div class="my-5">
+    <%= form.label :api_protocol %>
+    <%= form.select :api_protocol, Assistant::API_PROTOCOLS, {:include_blank => false}, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+  </div>
+
   <%= form.submit "Save",
     class: %|
       inline-block font-medium

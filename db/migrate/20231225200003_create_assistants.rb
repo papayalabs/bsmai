@@ -10,6 +10,7 @@ class CreateAssistants < ActiveRecord::Migration[7.1]
       t.boolean :images, null: false, default: false
       t.string :api_key
       t.string :api_url
+      t.string :api_protocol
 
       t.timestamps
     end

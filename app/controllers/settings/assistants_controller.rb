@@ -38,6 +38,6 @@ class Settings::AssistantsController < Settings::ApplicationController
   end
 
   def assistant_params
-    params.require(:assistant).permit(:name, :description, :model, :instructions, :api_key, :api_url)
+    params.require(:assistant).permit(:name, :description, :model, :instructions, :api_key, :api_url, :api_protocol)
   end
 end

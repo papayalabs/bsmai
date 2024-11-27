@@ -5,14 +5,14 @@
     #{size > 6 ? "text-sm" : "text-xs"}
     #{classes}
 |%>
-<% logo = if assistant.name.starts_with?("GPT-")
+<% logo = if assistant.model.include?("gpt")
   "openai_logo.svg"
-elsif assistant.name.starts_with?("Claude")
+elsif assistant.model.include?("claude")
   "claude_logo.svg"
-elsif assistant.name.starts_with?("Gemini")
+elsif assistant.model.include?("gemini")
   "google_gemini_logo.svg"
-elsif assistant.name.starts_with?("Ollama")
-  "ollama_logo.svg"
+elsif assistant.model.include?("llama")
+  "meta_ai_logo.svg"
 end
 %>
   
