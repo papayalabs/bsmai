@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class Settings::PeopleTest < ApplicationSystemTestCase
   setup do
-    @person = people(:keith_registered)
+    @person = users(:manuel)
     login_as @person
     visit edit_settings_person_url
   end

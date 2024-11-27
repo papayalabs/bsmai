@@ -2,9 +2,9 @@ require "application_system_test_case"
 
 class ConversationMessagesTest < ApplicationSystemTestCase
   setup do
-    15.times { |i| users(:keith).conversations.create!(assistant: assistants(:samantha), title: "Conversation #{i+1}") }
+    15.times { |i| users(:manuel).conversations.create!(assistant: assistants(:samantha), title: "Conversation #{i+1}") }
 
-    @user = users(:keith)
+    @user = users(:manuel)
     login_as @user
     @conversation = conversations(:greeting)
     visit_and_scroll_wait conversation_messages_path(@conversation)

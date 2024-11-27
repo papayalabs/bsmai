@@ -1,49 +1,23 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  test "has an associated person" do
-    assert_instance_of Person, users(:keith).person
-  end
-
   test "has a last_cancelled_message but can be nil" do
-    assert_equal messages(:dont_know_day), users(:keith).last_cancelled_message
+    assert_equal messages(:dont_know_day), users(:manuel).last_cancelled_message
     assert_nil users(:rob).last_cancelled_message
   end
 
   test "should not validate a new user without password" do
-    user = User.new
-    person = Person.new(email: "example@gmail.com", personable: user)
-    refute person.valid?
-  end
-
-  test "encrypts openai_key" do
-    user = users(:keith)
-    old_openai_key = user.openai_key
-    old_cipher_text = user.ciphertext_for(:openai_key)
-    user.update!(openai_key: "new one")
-    assert user.reload
-    refute_equal old_cipher_text, user.ciphertext_for(:openai_key)
-    assert_equal "new one", user.openai_key
-  end
-
-  test "encrypts anthropic_key" do
-    user = users(:keith)
-    old_anthropic_key = user.anthropic_key
-    old_cipher_text = user.ciphertext_for(:anthropic_key)
-    user.update!(anthropic_key: "new one")
-    assert user.reload
-    refute_equal old_cipher_text, user.ciphertext_for(:anthropic_key)
-    assert_equal "new one", user.anthropic_key
+    user = User.new(email: "example@gmail.com")
+    refute user.valid?
   end
 
   test "should validate a user with minimum information" do
-    user = User.new(password: "password", password_confirmation: "password", first_name: "John", last_name: "Doe")
-    person = Person.new(email: "example@gmail.com", personable: user)
-    assert person.valid?
+    user = User.new(email: "example@gmail.com", password: "password", password_confirmation: "password", first_name: "John", last_name: "Doe")
+    assert user.valid?
   end
 
   test "should validate presence of first name" do
-    user = users(:keith)
+    user = users(:manuel)
     user.update(first_name: nil)
     refute user.valid?
     assert_equal ["can't be blank"], user.errors[:first_name]
@@ -51,12 +25,12 @@ class UserTest < ActiveSupport::TestCase
 
   test "although last name is required for create it's not required for update" do
     assert_nothing_raised do
-      users(:keith).update!(last_name: nil)
+      users(:manuel).update!(last_name: nil)
     end
   end
 
   test "it can update a user with a password" do
-    user = users(:keith)
+    user = users(:manuel)
     old_password_hash = user.password_digest
     user.update(password: "password")
     assert user.valid?
@@ -64,7 +38,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "it can update a user without a password" do
-    user = users(:keith)
+    user = users(:manuel)
     old_password_hash = user.password_digest
     user.update(first_name: "New Name")
     assert user.valid?
@@ -88,7 +62,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "it can validate a password" do
-    user = users(:keith)
+    user = users(:manuel)
     assert user.authenticate("secret")
   end
 
@@ -109,27 +83,27 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "boolean values within preferences get converted back and forth properly" do
-    assert_nil users(:keith).preferences[:nav_closed]
-    assert_nil users(:keith).preferences[:kids]
-    assert_nil users(:keith).preferences[:city]
+    assert_nil users(:manuel).preferences[:nav_closed]
+    assert_nil users(:manuel).preferences[:kids]
+    assert_nil users(:manuel).preferences[:city]
 
-    users(:keith).update!(preferences: {
+    users(:manuel).update!(preferences: {
       nav_closed: true,
       kids: 2,
       city: "Austin"
     })
-    users(:keith).reload
+    users(:manuel).reload
 
-    assert users(:keith).preferences[:nav_closed]
-    assert_equal 2, users(:keith).preferences[:kids]
-    assert_equal "Austin", users(:keith).preferences[:city]
+    assert users(:manuel).preferences[:nav_closed]
+    assert_equal 2, users(:manuel).preferences[:kids]
+    assert_equal "Austin", users(:manuel).preferences[:city]
 
-    users(:keith).update!(preferences: {
+    users(:manuel).update!(preferences: {
       nav_closed: "false",
 
     })
 
-    refute users(:keith).preferences[:nav_closed]
+    refute users(:manuel).preferences[:nav_closed]
 
   end
 

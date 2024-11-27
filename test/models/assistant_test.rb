@@ -31,12 +31,12 @@ class AssistantTest < ActiveSupport::TestCase
 
   test "simple create works" do
     assert_nothing_raised do
-      Assistant.create!(user: users(:keith))
+      Assistant.create!(user: users(:manuel))
     end
   end
 
   test "tools defaults to empty array on create" do
-    a = Assistant.create!(user: users(:keith))
+    a = Assistant.create!(user: users(:manuel))
     assert_equal [], a.tools
   end
 
@@ -68,6 +68,6 @@ class AssistantTest < ActiveSupport::TestCase
   end
 
   test "initials will split on - and return two characters" do
-    assert_equal "G4", assistants(:keith_gpt4).initials
+    assert_equal "G4", assistants(:manuel_gpt4).initials
   end
 end

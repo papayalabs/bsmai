@@ -264,7 +264,7 @@ yes_cat_and_dog:
 # Next conversation
 
 popstate:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: javascript
   role: user
   content_text: what does popstate do in javascript?
@@ -275,7 +275,7 @@ popstate:
   version: 1
 
 popstate_event:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: javascript
   role: assistant
   content_text: |
@@ -317,7 +317,7 @@ latest_ruby_version:
 # Next conversation
 
 hello_claude:
-  assistant: keith_claude3
+  assistant: manuel_claude3
   conversation: hello_claude
   role: user
   content_text: Hi Claude, can you hear me?
@@ -328,7 +328,7 @@ hello_claude:
   version: 1
 
 claude_replying:
-  assistant: keith_claude3
+  assistant: manuel_claude3
   conversation: hello_claude
   role: assistant
   content_text: Yes, I can hear you.
@@ -339,7 +339,7 @@ claude_replying:
   version: 1
 
 claude_age:
-  assistant: keith_claude3
+  assistant: manuel_claude3
   conversation: hello_claude
   role: assistant
   content_text: How old are you?
@@ -350,7 +350,7 @@ claude_age:
   version: 1
 
 claude_age_replying:
-  assistant: keith_claude3
+  assistant: manuel_claude3
   conversation: hello_claude
   role: assistant
   content_text: I am an AI assistant and I do not have an age.
@@ -435,7 +435,7 @@ message3_v1:
   version: 1
 
 message2_v2:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: versioned
   role: user
   content_text: Where were you born?
@@ -447,7 +447,7 @@ message2_v2:
   branched: true
 
 message3_v2:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: versioned
   role: assistant
   content_text: I was born in San Francisco.
@@ -458,7 +458,7 @@ message3_v2:
   version: 2
 
 message4_v2:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: versioned
   role: user
   content_text: What do you think of the city?
@@ -469,7 +469,7 @@ message4_v2:
   version: 2
 
 message5_v2:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: versioned
   role: assistant
   content_text: It is a beautiful city.

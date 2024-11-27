@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class SessionsTest < ApplicationSystemTestCase
   setup do
-    @user = users(:keith)
+    @user = users(:manuel)
     visit root_url
   end
 

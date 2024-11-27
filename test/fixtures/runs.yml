@@ -179,7 +179,7 @@ two_attachments_response:
   file_ids: ["file-xyz123", "file-xyz987"]
 
 popstate_response:
-  assistant: keith_gpt4
+  assistant: manuel_gpt4
   conversation: javascript
   status: completed
   required_action:

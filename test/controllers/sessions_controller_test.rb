@@ -8,7 +8,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create session" do
     post login_path, params: {
-      email: people(:keith_registered).email,
+      email: users(:manuel).email,
       password: "secret"
     }
     assert_redirected_to root_url # we are not actually checking that a valid session was created?
@@ -16,14 +16,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should ignore case of email and create a session" do
     post login_path, params: {
-      email: people(:keith_registered).email.capitalize,
+      email: users(:manuel).email.capitalize,
       password: "secret"
     }
     assert_redirected_to root_url
   end
 
   test "it should redirect back with invalid password" do
-    email = people(:keith_registered).email
+    email = users(:manuel).email
     password = "wrong"
 
     post login_path, params: {email: email, password: password}
@@ -41,7 +41,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "it should strip whitespace around an email addresss" do
-    email = people(:keith_registered).email
+    email = users(:manuel).email
     email += " "
     password = "secret"
 
@@ -50,8 +50,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "it should redirect them to a conversation after login" do
-    person = people(:keith_registered)
-    post login_path, params: {email: person.email, password: "secret"}
+    user = users(:manuel)
+    post login_path, params: {email: user.email, password: "secret"}
     assert_redirected_to root_url
   end
 end

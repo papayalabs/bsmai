@@ -4,7 +4,7 @@ module AIBackend
   class AnthropicTest < ActiveSupport::TestCase
     setup do
       @conversation = conversations(:attachments)
-      @anthropic = Anthropic.new(users(:keith),
+      @anthropic = Anthropic.new(users(:manuel),
         assistants(:samantha),
         @conversation,
         @conversation.latest_message_for_version(:latest)
@@ -38,7 +38,7 @@ module AIBackend
     end
 
     test "preceding_messages only considers messages up to the assistant message being generated" do
-      @anthropic = Anthropic.new(users(:keith), assistants(:samantha), @conversation, messages(:yes_i_can))
+      @anthropic = Anthropic.new(users(:manuel), assistants(:samantha), @conversation, messages(:yes_i_can))
 
       preceding_messages = @anthropic.send(:preceding_messages)
 

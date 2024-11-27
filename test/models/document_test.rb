@@ -16,7 +16,7 @@ class DocumentTest < ActiveSupport::TestCase
   test "create fails without a file" do
     assert_raises ActiveRecord::RecordInvalid do
       Document.create!(
-        user: users(:keith),
+        user: users(:manuel),
         filename: "dog_photo.jpg",
         purpose: "assistants",
         bytes: 123
@@ -31,7 +31,7 @@ class DocumentTest < ActiveSupport::TestCase
     document = nil
     assert_nothing_raised do
       document = Document.create!(
-        user: users(:keith),
+        user: users(:manuel),
         file: file
       )
     end

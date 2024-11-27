@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class MessagesComposerAttachmentTest < ApplicationSystemTestCase
   setup do
-    @user = users(:keith)
+    @user = users(:manuel)
     login_as @user
     @submit = find("#composer #send") # oddly, when I changed id="submit" on the button the form fails to submit
     @input_selector = "#composer textarea"

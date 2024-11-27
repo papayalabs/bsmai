@@ -4,7 +4,7 @@ class ConversationMessagesImagesTest < ApplicationSystemTestCase
   setup do
     preprocess_all_variants!
 
-    @user = users(:keith)
+    @user = users(:manuel)
     login_as @user
     @conversation = conversations(:attachments)
   end

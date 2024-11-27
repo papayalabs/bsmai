@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class ConversationsTest < ApplicationSystemTestCase
   setup do
-    login_as users(:keith)
+    login_as users(:manuel)
     @starting_path = current_path
   end
 
@@ -76,7 +76,7 @@ class ConversationsTest < ApplicationSystemTestCase
     confirm_delete.click
 
     assert_toast "Deleted conversation"
-    assert_current_path new_assistant_message_path(users(:keith).assistants.ordered.first)
+    assert_current_path new_assistant_message_path(users(:manuel).assistants.ordered.first)
   end
 
   private

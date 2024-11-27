@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class ConversationMessagesHtmlTest < ApplicationSystemTestCase
   setup do
-    @user = users(:keith)
+    @user = users(:manuel)
     login_as @user
     @conversation = conversations(:greeting)
     visit_and_scroll_wait conversation_messages_path(@conversation)

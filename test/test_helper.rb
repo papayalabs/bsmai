@@ -4,6 +4,8 @@ require "rails/test_help"
 require "minitest/autorun"
 require "pry"
 
+Dir[Rails.root.join("test/support/**/*.rb")].sort.each { |file| require file }
+
 class Capybara::Node::Element
   def obsolete?
     inspect.include?('Obsolete')
@@ -19,13 +21,8 @@ class ActionDispatch::IntegrationTest
 
   Capybara.default_max_wait_time = 8
 
-  def login_as(user_or_person)
-    user = if user_or_person.is_a?(Person)
-      user_or_person.user
-    else
-      user_or_person
-    end
-    post login_path, params: { email: user.person.email, password: "secret" }
+  def login_as(user)
+    post login_path, params: { email: user.email, password: "secret" }
     assert_response :redirect
     follow_redirect!
     follow_redirect!

@@ -1,5 +1,5 @@
 samantha:
-  user: keith
+  user: manuel
   model: gpt-4
   name: Samantha
   description: My personal assistant
@@ -7,8 +7,8 @@ samantha:
   tools: [{"type": "code_interpreter"}, {"type": "retrieval"}, {"type": "function"}]
   images: true
 
-keith_gpt4:
-  user: keith
+manuel_gpt4:
+  user: manuel
   model: gpt-4
   name: GPT-4
   description: OpenAI's GPT-4
@@ -16,8 +16,8 @@ keith_gpt4:
   tools: [{"type": "code_interpreter"}, {"type": "retrieval"}, {"type": "function"}]
   images: true
 
-keith_claude3:
-  user: keith
+manuel_claude3:
+  user: manuel
   model: claude-3-opus-20240229
   name: Claude 3 Opus
   description: Claude 3, Opus version

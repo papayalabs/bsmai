@@ -37,7 +37,7 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test "minimal create works when Current is set" do
-    Current.user = users(:keith)
+    Current.user = users(:manuel)
 
     assert_nothing_raised do
       Message.create!(assistant: assistants(:samantha), content_text: "Hello")
@@ -45,13 +45,13 @@ class MessageTest < ActiveSupport::TestCase
 
     assert_equal assistants(:samantha), Message.last.assistant
     assert_not_nil Message.last.conversation
-    assert_equal users(:keith), Message.last.conversation.user
+    assert_equal users(:manuel), Message.last.conversation.user
   end
 
   test "creating a message with a conversation and Current.user set fails if conversation is not owned by the user" do
     Current.user = users(:rob)
     assistant = users(:rob).assistants.first
-    conversation_owned_by_someone_else = users(:keith).conversations.first
+    conversation_owned_by_someone_else = users(:manuel).conversations.first
 
     assert_raises ActiveRecord::RecordInvalid do
       Message.create!(
@@ -79,7 +79,7 @@ class MessageTest < ActiveSupport::TestCase
 
   test "creating a message with conversation user that does not match the assistant user succeeds when Current.user is not set" do
     assistant = users(:rob).assistants.first
-    conversation = users(:keith).conversations.first
+    conversation = users(:manuel).conversations.first
     Current.user = nil
 
     assert_not_equal assistant.user, conversation.user
@@ -94,8 +94,8 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test "creating a message with a different assistant and Current.user set fails if assistant is not owned by the user" do
-    Current.user = users(:keith)
-    conversation = users(:keith).conversations.first
+    Current.user = users(:manuel)
+    conversation = users(:manuel).conversations.first
     assistant_owned_by_someone_else = users(:rob).assistants.first
 
     assert_raises ActiveRecord::RecordInvalid do
@@ -107,9 +107,9 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test "creating a message with a different assistant and Current.user succeeds when assistant is owned by the user" do
-    Current.user = users(:keith)
-    conversation = users(:keith).conversations.first
-    new_assistant = users(:keith).assistants.where.not(id: conversation.assistant_id).first
+    Current.user = users(:manuel)
+    conversation = users(:manuel).conversations.first
+    new_assistant = users(:manuel).assistants.where.not(id: conversation.assistant_id).first
 
     assert_nothing_raised do
       message = conversation.messages.create!(
@@ -121,7 +121,7 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test "creating a message with assistant that does not match the conversation user succeeds when Current.user is not set" do
-    conversation = users(:keith).conversations.first
+    conversation = users(:manuel).conversations.first
     assistant_owned_by_someone_else = users(:rob).assistants.first
     Current.user = nil
 
@@ -138,7 +138,7 @@ class MessageTest < ActiveSupport::TestCase
 
   test "when a conversation gets a message from a new assistant this propogates to the conversation" do
     old_assistant = conversations(:greeting).assistant
-    new_assistant = assistants(:keith_claude3)
+    new_assistant = assistants(:manuel_claude3)
 
     conversations(:greeting).messages.create!(assistant: new_assistant, content_text: "Hello")
     assert_equal new_assistant, conversations(:greeting).reload.assistant
@@ -162,8 +162,8 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test "message which is referenced by user can be destroyed" do
-    assert_equal messages(:dont_know_day), users(:keith).last_cancelled_message
+    assert_equal messages(:dont_know_day), users(:manuel).last_cancelled_message
     messages(:dont_know_day).destroy
-    assert_nil users(:keith).reload.last_cancelled_message
+    assert_nil users(:manuel).reload.last_cancelled_message
   end
 end

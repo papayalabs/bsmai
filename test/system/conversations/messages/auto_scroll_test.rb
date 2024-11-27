@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class ConversationMessagesAutoScrollTest < ApplicationSystemTestCase
   setup do
-    @user = users(:keith)
+    @user = users(:manuel)
     login_as @user
     @conversation = conversations(:greeting)
     @new_message = @conversation.messages.create! assistant: @conversation.assistant, content_text: "Stub: ", role: :assistant

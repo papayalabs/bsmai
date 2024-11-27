@@ -7,14 +7,14 @@ class Message::CancellableTest < ActiveSupport::TestCase
   end
 
   test "cancelled_by" do
-    assert_equal users(:keith), messages(:dont_know_day).cancelled_by
+    assert_equal users(:manuel), messages(:dont_know_day).cancelled_by
   end
 
   test "when a message is cancelled this user.last_cancelled_message gets set" do
-    Current.user = users(:keith)
+    Current.user = users(:manuel)
 
     assert_changes "messages(:im_a_bot).cancelled_at", from: nil do
-      assert_changes "users(:keith).last_cancelled_message", to: messages(:im_a_bot) do
+      assert_changes "users(:manuel).last_cancelled_message", to: messages(:im_a_bot) do
         messages(:im_a_bot).cancelled!
       end
     end

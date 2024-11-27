@@ -1,36 +1,36 @@
 greeting:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Meeting Samantha
   last_assistant_message: im_a_bot
 
 attachment:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Testing one attachment
   last_assistant_message: not_human
 
 attachments:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Testing attachments
   last_assistant_message: yes_cat_and_dog
 
 javascript:
-  user: keith
-  assistant: keith_gpt4
+  user: manuel
+  assistant: manuel_gpt4
   title: Javascript popstate
   last_assistant_message: popstate_event
 
 ruby_version:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Ruby version
   last_assistant_message: latest_ruby_version
 
 hello_claude:
-  user: keith
-  assistant: keith_claude3
+  user: manuel
+  assistant: manuel_claude3
   title: Meeting Claude
   last_assistant_message: claude_age_replying
 
@@ -51,7 +51,7 @@ debugging:
 # messages in parens do not exist in fixtures
 
 versioned:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Versioned conversation
   last_assistant_message: message5_v2
@@ -65,7 +65,7 @@ versioned:
 # messages in parens do not exist in fixtures
 
 versioned2:
-  user: keith
+  user: manuel
   assistant: samantha
   title: Versioned v2 conversation
   last_assistant_message: msg2_v5
