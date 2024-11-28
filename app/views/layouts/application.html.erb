@@ -1,8 +1,6 @@
-<% content_for :title, "BSMAI - "+Current.user.name.to_s %>
+<% content_for :title, GeneralSetting.first.app_name+" - "+Current.user.name.to_s %>
 <!DOCTYPE html>
-<html 
-    class=<%= "dark" %>
-  >
+<html  class=<%= GeneralSetting.first.theme_preference == "DARK" ? "dark" : "light" %>>
  
   <%= render "head" %>
 

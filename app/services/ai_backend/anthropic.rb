@@ -78,7 +78,7 @@ class AIBackend::Anthropic
 
   def preceding_messages
     @conversation.messages.for_conversation_version(@message.version).where("messages.index < ?", @message.index).collect do |message|
-      if @assistant.images && message.documents.present?
+      if @assistant.supports_images && message.documents.present?
 
         content = [{ type: "text", text: message.content_text }]
         content += message.documents.collect do |document|

@@ -22,3 +22,22 @@ user.active = true
 user.save!
 
 puts user.first_name.to_s+" Created"
+
+user.assistants.create! name: "Meta Llama 3.2", model: "llama3.2", api_protocol: "OLLAMA", api_url: "http://localhost:11434", supports_images: false
+user.assistants.create! name: "Gemini Flahs 1.5", model: "gemini-1.5-flash", api_protocol: "GEMINI", api_url: "https://api.gemini.com/v1/", supports_images: true
+user.assistants.create! name: "Claude Haiku 3.0", model: "claude-3-haiku-20240307", api_protocol: "ANTHROPIC", api_url: "https://api.anthropic.com/", supports_images: true
+
+puts "Assistants Created"
+
+
+prompt_processes = PromptProcess.new
+prompt_processes.name = "New Prompt Process"
+prompt_processes.save!
+
+puts "Prompt Process Created"
+
+general_settings = GeneralSetting.new
+general_settings.theme_preference = "LIGHT"
+general_settings.save!
+
+puts "General Settings Created"

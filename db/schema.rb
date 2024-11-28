@@ -55,7 +55,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
     t.string "description"
     t.string "instructions"
     t.jsonb "tools", default: [], null: false
-    t.boolean "images", default: false, null: false
+    t.boolean "supports_tools", null: false, default: false
+    t.boolean "supports_system_message", null: false, default: false
+    t.boolean "supports_images", null: false, default: false
     t.string "api_key"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -101,6 +103,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
   end
 
   create_table "general_settings", force: :cascade do |t|
+    t.string "app_name"
+    t.string "app_logo"
     t.string "google_api_key"
     t.string "theme_preference"
     t.datetime "created_at", null: false
