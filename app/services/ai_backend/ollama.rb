@@ -71,9 +71,6 @@ class AIBackend::Ollama
       instructions: system_message,
     )
     begin
-      # Systeem instruction is not working well on gem 'gemini-ai'
-      #response = @client.stream_generate_content({contents: preceding_messages,system_instruction: system_message})
-      #response = @client.stream_generate_content({contents: preceding_messages})
       response = @client.send(client_method_name, @client_config) do |event, raw|
         yield event["message"]["content"]
       end

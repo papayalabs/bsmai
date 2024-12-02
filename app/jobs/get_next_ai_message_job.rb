@@ -5,7 +5,7 @@ class GetNextAIMessageJob < ApplicationJob
   retry_on WaitForPrevious, wait: ->(run) { (2**run - 1).seconds }, attempts: 3
 
   def ai_backend
-    if @assistant.api_protocol == "OPENAI"
+    if @assistant.api_protocol == "OPEN_AI"
       AIBackend::OpenAI
     elsif @assistant.api_protocol == "OLLAMA"
       AIBackend::Ollama
@@ -35,20 +35,20 @@ class GetNextAIMessageJob < ApplicationJob
 
     puts "\n### Wait for reply" unless Rails.env.test?
 
-    response = ai_backend.new(@conversation.user, @assistant, @conversation, @message).get_next_chat_message do |content_chunk|
-      @message.content_text = "" if @message.content_text.blank?
-      @message.content_text += content_chunk
+    response = ai_backend.new(@conversation.user, @assistant, @conversation, @message)
+      .get_next_chat_message do |content_chunk|
+        @message.content_text += content_chunk
 
-      if Time.current.to_f - last_sent_at.to_f >= 0.1
-        GetNextAIMessageJob.broadcast_updated_message(@message, thinking: true)
-        last_sent_at = Time.current
-      end
+        if Time.current.to_f - last_sent_at.to_f >= 0.1
+          GetNextAIMessageJob.broadcast_updated_message(@message, thinking: true)
+          last_sent_at = Time.current
+        end
 
-      if generation_was_cancelled?
-        @message.cancelled_at = Time.current
-        raise ResponseCancelled
+        if generation_was_cancelled?
+          @message.cancelled_at = Time.current
+          raise ResponseCancelled
+        end
       end
-    end
 
     if @message.content_text.blank? # this shouldn't happen b/c the += above will build up the response, but it's a final effort if things are blank
       @message.content_text = response if response.is_a?(String)
@@ -60,6 +60,10 @@ class GetNextAIMessageJob < ApplicationJob
 
   rescue ResponseCancelled => e
     puts "\n### Response cancelled in GetNextAIMessageJob(#{message_id})" unless Rails.env.test?
+    wrap_up_the_message
+    return true
+  rescue OpenAI::ConfigurationError => e
+    set_openai_error
     wrap_up_the_message
     return true
   rescue Faraday::UnauthorizedError => e

@@ -1,0 +1,106 @@
+class AIBackend::OpenAI
+  attr :client
+
+  # Rails system tests don't seem to allow mocking because the server and the
+  # test are in separate processes.
+  #
+  # In regular tests, mock this method or the TestClients::OpenAI class to do
+  # what you want instead.
+  def self.client
+    if Rails.env.test?
+      TestClients::OpenAI
+    else
+      OpenAI::Client
+    end
+  end
+
+  def initialize(user, assistant, conversation, message)
+    raise OpenAI::ConfigurationError if assistant.api_key.blank?
+    begin
+      @client = self.class.client.new(uri_base: assistant.api_url, access_token: assistant.api_key, api_version: "")
+    rescue ::Faraday::UnauthorizedError => e
+      raise OpenAI::ConfigurationError
+    end
+    @assistant = assistant
+    @conversation = conversation
+    @message = message
+  end
+
+  def get_next_chat_message(&chunk_received_handler)
+    stream_response_text = ""
+
+    response_handler = proc do |intermediate_response, bytesize|
+      chunk = intermediate_response.dig("choices", 0, "delta", "content")
+      print chunk if Rails.env.development?
+      if chunk
+        stream_response_text += chunk
+        yield chunk
+      end
+    rescue ::GetNextAIMessageJob::ResponseCancelled => e
+      raise e
+    rescue ::Faraday::UnauthorizedError => e
+      raise OpenAI::ConfigurationError
+    rescue => e
+      puts "\nUnhandled error in AIBackends::OpenAI response handler: #{e.message}"
+      puts e.backtrace
+    end
+
+    response_handler = nil unless block_given?
+
+    begin
+      response = @client.chat(parameters: {
+        model: @assistant.model,
+        messages: system_message + preceding_messages,
+        stream: response_handler,
+        max_tokens: 2000, # we should really set this dynamically, based on the model, to the max
+      })
+    rescue ::Faraday::UnauthorizedError => e
+      raise OpenAI::ConfigurationError
+    end
+
+    response_text = if response.is_a?(Hash) && response.dig("choices")
+      response.dig("choices", 0, "message", "content")
+    else
+      response
+    end
+
+    if response_text.blank? && stream_response_text.blank?
+      raise ::Faraday::ParsingError
+    else
+      response_text
+    end
+  end
+
+  private
+
+  def system_message
+    return [] if @assistant.instructions.blank?
+
+    [{
+      role: 'system',
+      content: @assistant.instructions
+    }]
+  end
+
+  def preceding_messages
+    @conversation.messages.for_conversation_version(@message.version).where("messages.index < ?", @message.index).collect do |message|
+      if @assistant.supports_images && message.documents.present?
+
+        content = [{ type: "text", text: message.content_text }]
+        content += message.documents.collect do |document|
+          { type: "image_url", image_url: { url: document.file_data_url(:large) }}
+        end
+
+        {
+          role: message.role,
+          content: content
+        }
+      else
+        {
+          role: message.role,
+          content: message.content_text || ""
+        }
+      end
+    end
+  end
+end

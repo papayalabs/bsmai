@@ -7,7 +7,7 @@ class Assistant < ApplicationRecord
   has_many :steps, dependent: :destroy
   has_many :messages # TODO: What should happen if an assistant is deleted?
 
-  API_PROTOCOLS = ["ANTHROPIC","GEMINI","OLLAMA"]
+  API_PROTOCOLS = ["ANTHROPIC","GEMINI","OLLAMA","OPEN_AI"]
   validates :api_protocol, inclusion: API_PROTOCOLS
 
   validates :tools, presence: true, allow_blank: true

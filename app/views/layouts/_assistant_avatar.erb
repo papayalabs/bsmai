@@ -7,6 +7,8 @@
 |%>
 <% logo = if assistant.model.include?("gpt")
   "openai_logo.svg"
+elsif assistant.model.include?("sonar")
+  "perplexity_ai_logo.svg"
 elsif assistant.model.include?("claude")
   "claude_logo.svg"
 elsif assistant.model.include?("gemini")

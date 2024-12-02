@@ -1,14 +1,15 @@
 class AIBackend::Gemini
+  class ::Gemini::Errors::ConfigurationError < ::Gemini::Errors::GeminiError; end
   attr :client
 
   # Rails system tests don't seem to allow mocking because the server and the
   # test are in separate processes.
   #
-  # In regular tests, mock this method or the TestClients::OpenAI class to do
+  # In regular tests, mock this method or the TestClients::Gemini class to do
   # what you want instead.
   def self.client
     if Rails.env.test?
-      TestClients::Gemini
+      TestClient::Gemini
     else
       Gemini
     end
@@ -16,16 +17,21 @@ class AIBackend::Gemini
 
   def initialize(user, assistant, conversation, message)
     begin
+      raise configuration_error if assistant.api_key.blank? && assistant.api_service.effective_token.blank?
+      Rails.logger.info "Connecting to Gemini API server at #{assistant.api_url} with access token of length #{ assistant.api_key.to_s.length}"
       @client = self.class.client.new(
         credentials: {
           service: "generative-language-api",
-          api_key: assistant.api_key,
+          api_key:  assistant.api_key,
           version: "v1beta"
         },
-        options: { model: assistant.model, server_sent_events: true }
+        options: {
+          model: assistant.model,
+          server_sent_events: true
+        }
       )
-    rescue ::Faraday::UnauthorizedError => e
-      raise Faraday::UnauthorizedError
+    rescue ::Faraday::UnauthorizedError, ::Faraday::BadRequestError => e
+      raise configuration_error
     end
     @assistant = assistant
     @conversation = conversation
@@ -37,68 +43,70 @@ class AIBackend::Gemini
   end
 
   def configuration_error
-    ::OpenAI::ConfigurationError
+    ::Gemini::Errors::ConfigurationError
   end
 
   def set_client_config(config)
-    @client_config = {
-      contents: config[:messages] #,
-      # Systeem instruction is not working well on gem 'gemini-ai'
-      #system_instruction: system_message(config[:instructions])
-    }
+    @client_config =  {
+      contents: config[:messages],
+      system_instruction: ( system_message(config[:instructions]) if @assistant.supports_system_message?)
+    }.compact
   end
 
   def get_oneoff_message(instructions, messages, params = {})
-    set_client_config(
-      messages: preceding_messages,
-      #instructions: system_message,
-    )
-
-    response = @client.send(client_method_name, @client_config)
-    response.dig("candidates",0,"content","parts",0,"text")
+    response = @client.generate_content({
+      system_instruction: system_message(instructions),
+      contents: { role: "user", parts: { text: messages.first }}, # TODO: could implement preceding_conversation_messages and call it here
+      ** params
+    })
+    response.dig("candidates", 0, "content", "parts", 0, "text")
   end
 
   def get_next_chat_message(&chunk_handler)
     set_client_config(
-      messages: preceding_messages,
-      #instructions: system_message,
+      messages: preceding_conversation_messages,
+      instructions: full_instructions,
     )
 
     begin
-      # Systeem instruction is not working well on gem 'gemini-ai'
-      #response = @client.stream_generate_content({contents: preceding_messages,system_instruction: system_message})
-      #response = @client.stream_generate_content({contents: preceding_messages})
-      response = @client.send(client_method_name, @client_config) do |event, parsed, raw|
-        puts "Event from Gemini"
-        puts event.inspect
-        sleep(0.1)
-        if event.dig("candidates",0,"content","parts",0,"text") != nil
-          yield event.dig("candidates",0,"content","parts",0,"text")
+      if Rails.env.test?
+        @client.send(client_method_name, @client_config).each do |intermediate_response|
+          content_chunk = intermediate_response.dig("candidates",0,"content","parts",0,"text")
+          yield content_chunk if content_chunk != nil
+        end
+      else
+        response = @client.send(client_method_name, @client_config) do |intermediate_response, parsed, raw|
+          content_chunk = intermediate_response.dig("candidates",0,"content","parts",0,"text")
+          yield content_chunk if content_chunk != nil
         end
       end
-    rescue ::Faraday::UnauthorizedError => e
+    rescue ::Faraday::UnauthorizedError, ::Faraday::BadRequestError => e
       puts e.message
-      raise OpenAI::ConfigurationError
+      raise configuration_error
     end
     return nil
   end
 
   private
 
-  def system_message
-    return [] if @assistant.instructions.blank?
+  def system_message(content)
+    return [] if content.blank?
     {
-      role: 'user', parts: { text: @assistant.instructions }
+      role: "user", parts: { text: content }
     }
   end
 
-  def preceding_messages
+  def preceding_conversation_messages
     @conversation.messages.for_conversation_version(@message.version).where("messages.index < ?", @message.index).collect do |message|
-      if @assistant.supports_images && message.documents.present?
+      if @assistant.supports_images? && message.documents.present?
 
-        content = [{ type: "text", text: message.content_text }]
+        content = [{ text: message.content_text }]
         content += message.documents.collect do |document|
-          { type: "image_url", image_url: { url: document.file_data_url(:large) }}
+          { inline_data: {
+              mime_type: document.file.blob.content_type,
+              data: document.file_base64(:large),
+            }
+          }
         end
 
         {
@@ -111,5 +119,11 @@ class AIBackend::Gemini
       end
     end
   end
-end
 
+  def full_instructions
+    s = @assistant.instructions.to_s
+
+    s += "\n\nFor the user, the current time is #{DateTime.current.strftime("%-l:%M%P")}; the current date is #{DateTime.current.strftime("%A, %B %-d, %Y")}"
+    s.strip
+  end
+end
