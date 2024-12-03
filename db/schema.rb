@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_03_105800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,14 +55,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
     t.string "description"
     t.string "instructions"
     t.jsonb "tools", default: [], null: false
-    t.boolean "supports_tools", null: false, default: false
-    t.boolean "supports_system_message", null: false, default: false
-    t.boolean "supports_images", null: false, default: false
+    t.boolean "supports_images", default: false, null: false
+    t.boolean "supports_tools", default: false, null: false
+    t.boolean "supports_system_message", default: false, null: false
     t.string "api_key"
+    t.string "api_url"
+    t.string "api_protocol"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "api_url"
-    t.string "api_protocol", limit: 255
     t.index ["user_id"], name: "index_assistants_on_user_id"
   end
 
@@ -144,15 +144,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
     t.datetime "updated_at", null: false
     t.index ["chat_id"], name: "index_notes_on_chat_id"
     t.index ["parent_id"], name: "index_notes_on_parent_id"
-  end
-
-  create_table "people", force: :cascade do |t|
-    t.string "personable_type"
-    t.bigint "personable_id"
-    t.string "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["personable_type", "personable_id"], name: "index_people_on_personable"
   end
 
   create_table "prompt_processes", force: :cascade do |t|
@@ -342,20 +333,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_27_133512) do
     t.index ["run_id"], name: "index_steps_on_run_id"
   end
 
-  create_table "tombstones", force: :cascade do |t|
-    t.datetime "erected_at"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "password_digest"
     t.datetime "registered_at", default: -> { "CURRENT_TIMESTAMP" }
     t.string "first_name"
     t.string "last_name"
-    t.jsonb "preferences"
-    t.bigint "last_cancelled_message_id"
+    t.string "email"
     t.integer "role"
     t.boolean "active", default: false, null: false
-    t.string "email", limit: 255
+    t.jsonb "preferences"
+    t.bigint "last_cancelled_message_id"
     t.index ["last_cancelled_message_id"], name: "index_users_on_last_cancelled_message_id"
   end
 

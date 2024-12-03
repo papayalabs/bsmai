@@ -40,6 +40,8 @@ puts "Prompt Process Created"
 
 general_settings = GeneralSetting.new
 general_settings.theme_preference = "LIGHT"
+general_settings.app_logo = "https://bsmai.s3.us-east-2.amazonaws.com/bsmai.png"
+general_settings.app_name = "BSMAI"
 general_settings.save!
 
 puts "General Settings Created"
