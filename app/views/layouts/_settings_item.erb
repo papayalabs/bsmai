@@ -1,6 +1,7 @@
 <% item, link = settings_item %>
 <% selected = (controller.to_s == controller_name.to_s) %>
 <% selected = selected && params[:id] == item.id.to_s  if params[:id] && item.is_a?(Assistant) %>
+<% selected = item.to_s == "New Assistant" if params[:id] == nil %>
 
 <div class="
             flex justify-between items-center

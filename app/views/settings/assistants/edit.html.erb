@@ -3,10 +3,7 @@
 
   <%= render "form", assistant: @assistant %>
 
-  <%# TODO: Messages are connected to assistants. When an assistant is deleted,
-      what should happen to the messages?
-
-      button_to "Delete",
+  <%= button_to "Delete",
         settings_assistant_path(@assistant),
         method: :delete,
         data: { turbo_confirm: "Are you sure?" },
