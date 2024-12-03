@@ -24,7 +24,7 @@ user.save!
 puts user.first_name.to_s+" Created"
 
 user.assistants.create! name: "Meta Llama 3.2", model: "llama3.2", api_protocol: "OLLAMA", api_url: "http://localhost:11434", supports_images: false
-user.assistants.create! name: "Gemini Flahs 1.5", model: "gemini-1.5-flash", api_protocol: "GEMINI", api_url: "https://api.gemini.com/v1/", supports_images: true
+user.assistants.create! name: "Gemini Flahs 1.5", model: "gemini-1.5-flash", api_protocol: "GEMINI", api_url: "https://generativelanguage.googleapis.com/v1beta/", supports_images: true
 user.assistants.create! name: "Claude Haiku 3.0", model: "claude-3-haiku-20240307", api_protocol: "ANTHROPIC", api_url: "https://api.anthropic.com/", supports_images: true
 user.assistants.create! name: "Perplexity Sonar", model: "llama-3.1-sonar-large-128k-online", api_protocol: "OPEN_AI", api_url: "https://api.perplexity.ai/", supports_images: true
 user.assistants.create! name: "ChatGPT 3.5 Turbo", model: "gpt-3.5-turbo", api_protocol: "OPEN_AI", api_url: "https://api.openai.com/v1/", supports_images: true
