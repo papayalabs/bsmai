@@ -74,7 +74,7 @@ class AIBackend::OpenAI
   private
 
   def system_message
-    return [] if @assistant.instructions.blank?
+    return [] if @assistant.instructions.blank? || !@assistant.supports_system_message?
 
     [{
       role: 'system',

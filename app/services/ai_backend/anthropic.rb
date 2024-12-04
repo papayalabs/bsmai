@@ -50,7 +50,7 @@ class AIBackend::Anthropic
     begin
       response = @client.messages(
         model: @assistant.model,
-        system: @assistant.instructions,
+        system: @assistant.supports_system_message? ? @assistant.instructions : "",
         messages: preceding_messages,
         parameters: {
           max_tokens: 2000, # we should really set this dynamically, based on the model, to the max
