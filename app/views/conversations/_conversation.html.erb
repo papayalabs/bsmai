@@ -107,6 +107,7 @@
             <li>
               <%= link_to "Google Sheet Link", "https://docs.google.com/spreadsheets/d/"+value.to_s, target: :_blank if key.include? "google_sheet"%>
               <%= link_to "Google Doc Link", "https://docs.google.com/document/d/"+value.to_s, target: :_blank if key.include? "google_doc"%>
+              <%= link_to "Txt File", download_txt_file_path(:content => value), method: :post, target: :_blank  if key.include? "txt" %>
             </li>
           <% end %>
         </menu>

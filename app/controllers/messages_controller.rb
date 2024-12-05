@@ -65,6 +65,8 @@ class MessagesController < ApplicationController
       next_prompt_instructions = get_prompt_instructions_with_google_sheet_2(next_prompt_instructions,conversation.state["google_sheet_2_id"]) if conversation.state["google_sheet_2_id"].present?
       next_prompt_instructions = get_prompt_instructions_with_google_doc(next_prompt_instructions,conversation.state["google_doc_1_id"],1) if conversation.state["google_doc_1_id"].present?
       next_prompt_instructions = get_prompt_instructions_with_google_doc(next_prompt_instructions,conversation.state["google_doc_2_id"],2) if conversation.state["google_doc_2_id"].present?
+      next_prompt_instructions = get_prompt_instructions_with_txt(next_prompt_instructions,conversation.state["txt_1_url"],1) if conversation.state["txt_1_url"].present?
+      next_prompt_instructions = get_prompt_instructions_with_txt(next_prompt_instructions,conversation.state["txt_2_url"],2) if conversation.state["txt_2_url"].present?
       params[:message][:content_text] = next_prompt_instructions
     end
 
@@ -148,6 +150,18 @@ class MessagesController < ApplicationController
         prompt_instructions = "Prompt Instructions Runtime Error: Invalid Google Spreadsheet/Doc URL"
       end
     end
+    if params[:txt_1_url].present?
+      txt_1_url = File.read(params[:txt_1_url])
+      prompt_instructions = get_prompt_instructions_with_txt(prompt_instructions,txt_1_url,1)
+    else
+      prompt_instructions = "Prompt Instructions Runtime Error: Invalid Txt File"
+    end
+    if params[:txt_2_url].present?
+      txt_2_url = File.read(params[:txt_2_url])
+      prompt_instructions = get_prompt_instructions_with_txt(prompt_instructions,txt_2_url,2)
+    else
+      prompt_instructions = "Prompt Instructions Runtime Error: Invalid Txt File"
+    end
     conversation_process_name = params[:conversation_process_name]
     @assistant = Assistant.find_by(id: params[:assistant_id])
     @conversation = Current.user.conversations.new(assistant_id: @assistant.id)
@@ -170,6 +184,8 @@ class MessagesController < ApplicationController
         @message.conversation.state["google_sheet_2_id"] = google_sheet_2_id if google_sheet_2_id != nil
         @message.conversation.state["google_doc_1_id"] = google_doc_1_id if google_doc_1_id != nil
         @message.conversation.state["google_doc_2_id"] = google_doc_2_id if google_doc_2_id != nil
+        @message.conversation.state["txt_1_url"] = txt_1_url if txt_1_url != nil
+        @message.conversation.state["txt_2_url"] = txt_2_url if txt_2_url != nil
         @message.conversation.title = conversation_process_name if conversation_process_name != nil
         @message.conversation.save
         puts "Conversation were updated: "+@message.conversation.inspect
@@ -239,6 +255,20 @@ class MessagesController < ApplicationController
     rescue StandardError => e
       return "Prompt Instructions Runtime Error: "+e.message.to_s
     end
+  end
+
+  def get_prompt_instructions_with_txt(prompt_instructions,txt_1_url,doc_number)
+    begin
+      txt = txt_1_url
+      prompt_instructions.gsub!("[DOC"+doc_number.to_s+"]",txt)
+      prompt_instructions
+    rescue StandardError => e
+      return "Prompt Instructions Runtime Error: "+e.message.to_s
+    end
+  end
+
+  def download_txt_file
+    send_data params[:content], filename: "file.txt"
   end
 
   private

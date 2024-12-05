@@ -9,11 +9,11 @@
               border border-gray-400
               rounded-lg py-3 px-5
               cursor-pointer">Start New Process</button>
-
-  <dialog data-modal-target="dialog" style="width:600px;background-color: black;color: white">
+  <% style = GeneralSetting.first.theme_preference == "DARK" ? "width:600px;background-color: black;color: white" : "width:600px;background-color: white;color: black" %>
+  <dialog data-modal-target="dialog" style=<%= style %>>
     <div style="padding:15px;">
       <button type="button" data-action="modal#close" class="absolute top-4 right-4">X</button>
-      <%= form_tag("/start_new_process", :method => "get", :remote => true) do %>
+      <%= form_tag start_new_process_path, :method => 'post', :multipart => true,  :remote => true  do %>
         <h1>Enter the Process you want to run and the name</h1>
         <hr>
         </br>
@@ -33,12 +33,16 @@
         <%= text_field_tag "google_sheet_2_url", nil, class: "text-gray-950", style: "width:570px" %>
         </br>
         </br>
-        <%= label_tag("google_doc_1_url", "AI Overview Doc -  [DOC1]:") %>
-        <%= text_field_tag "google_doc_1_url", nil, class: "text-gray-950", style: "width:570px" %>
+        <!-- %= label_tag("google_doc_1_url", "AI Overview Doc -  [DOC1]:") % -->
+        <!-- %= text_field_tag "google_doc_1_url", nil, class: "text-gray-950", style: "width:570px" % -->
+        <%= label_tag("txt_1_url", "AI Overview Doc -  [DOC1]:") %>
+        <%= file_field_tag "txt_1_url", accept: 'text/txt', class: "text-gray-950", style: "width:570px" %>
         </br>
         </br>
-        <%= label_tag("google_doc_2_url", "SERP Analysis Doc - [DOC2]:") %>
-        <%= text_field_tag "google_doc_2_url", nil, class: "text-gray-950", style: "width:570px" %>
+        <!-- %= label_tag("google_doc_2_url", "SERP Analysis Doc - [DOC2]:") % -->
+        <!-- %= text_field_tag "google_doc_2_url", nil, class: "text-gray-950", style: "width:570px" % -->
+        <%= label_tag("txt_2_url", "SERP Analysis Doc - [DOC2]:") %>
+        <%= file_field_tag 'txt_2_url', accept: 'text/txt', class: "text-gray-950", style: "width:570px" %>
         </br>
         </br>
         <%= hidden_field_tag "assistant_id", params[:conversation_id].present? ? Conversation.find(params[:conversation_id]).assistant.id : params[:assistant_id] %>

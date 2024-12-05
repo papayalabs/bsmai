@@ -39,8 +39,10 @@ Rails.application.routes.draw do
   get "/register", to: "users#new"
   get "/logout", to: "sessions#destroy"
 
-  get "/start_new_process", to: "messages#start_new_process"
+  post "/start_new_process", to: "messages#start_new_process", as: :start_new_process
 
   get "/rails/active_storage/postgresql/:encoded_key/*filename" => "active_storage/postgresql#show", as: :rails_postgresql_service
   put "/rails/active_storage/postgresql/:encoded_token" => "active_storage/postgresql#update", as: :update_rails_postgresql_service
+
+  match "/download_txt_file" => "messages#download_txt_file", :as => "download_txt_file", via: [:post,:get]
 end
