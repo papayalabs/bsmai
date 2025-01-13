@@ -153,14 +153,10 @@ class MessagesController < ApplicationController
     if params[:txt_1_url].present?
       txt_1_url = File.read(params[:txt_1_url])
       prompt_instructions = get_prompt_instructions_with_txt(prompt_instructions,txt_1_url,1)
-    else
-      prompt_instructions = "Prompt Instructions Runtime Error: Invalid Txt File"
     end
     if params[:txt_2_url].present?
       txt_2_url = File.read(params[:txt_2_url])
       prompt_instructions = get_prompt_instructions_with_txt(prompt_instructions,txt_2_url,2)
-    else
-      prompt_instructions = "Prompt Instructions Runtime Error: Invalid Txt File"
     end
     conversation_process_name = params[:conversation_process_name]
     @assistant = Assistant.find_by(id: params[:assistant_id])
