@@ -44,6 +44,16 @@
     <%= form.select :api_protocol, Assistant::API_PROTOCOLS, {:include_blank => false}, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
   </div>
 
+  <div class="my-5">
+    <%= form.label :supports_system_message %>
+    <%= form.check_box :supports_system_message, {}, form.object.supports_system_message == 0 ? false : true %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :supports_images %>
+    <%= form.check_box :supports_images, {}, form.object.supports_images == 0 ? false : true %>
+  </div>
+
   <%= form.submit "Save",
     class: %|
       inline-block font-medium

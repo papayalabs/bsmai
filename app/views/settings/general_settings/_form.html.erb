@@ -12,6 +12,16 @@
   <% end %>
 
   <div class="my-5">
+    <%= form.label :app_name %>
+    <%= form.text_field :app_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :app_logo %>
+    <%= form.text_field :app_logo, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
+  </div>
+
+  <div class="my-5">
     <%= form.label :google_api_key %>
     <%= form.text_field :google_api_key, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full dark:text-black" %>
   </div>

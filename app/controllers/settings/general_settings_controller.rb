@@ -19,6 +19,6 @@ class Settings::GeneralSettingsController < Settings::ApplicationController
   end
 
   def general_setting_params
-    params.require(:general_setting).permit(:google_api_key,:theme_preference)
+    params.require(:general_setting).permit(:google_api_key,:theme_preference,:app_name,:app_logo)
   end
 end
