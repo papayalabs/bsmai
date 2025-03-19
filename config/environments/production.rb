@@ -98,4 +98,14 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+    #Exception notifier config
+  config.action_mailer.delivery_method  = :postmark
+  config.action_mailer.postmark_settings = { :api_token => Rails.application.secrets.postmark_api_token }
+  Rails.application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[ERROR] ",
+    :sender_address => %{"BSMAI" <#{Rails.application.config.site.info_email}>},
+    :exception_recipients => %w{papayalabs@gmail.com}
+  }
 end

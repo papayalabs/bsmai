@@ -117,3 +117,8 @@ gem 'google-apis-drive_v3'
 gem 'net-ssh', '>= 6.0.2'
 gem 'ed25519', '>= 1.2', '< 2.0'
 gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0'
+
+#Track Errors
+gem 'rack-static_fallback'
+gem 'exception_notification'
+gem 'postmark-rails', '~> 0.21.0'
