@@ -117,7 +117,7 @@ end
           text-gray-600 dark:text-gray-300
           <%= !last_message_done && 'invisible' %> group-hover:visible
         ">
-          <% if message.versions.length > 1 %>
+          <% if false %> <!-- message.versions.length > 1 % Here is to enable many versions -->
             <%= button_to message_path(message, version: previous_version),
               method: :patch,
               params: { message: { id: message.id } },
