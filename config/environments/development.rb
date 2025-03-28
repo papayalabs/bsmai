@@ -79,4 +79,14 @@ Rails.application.configure do
   config.web_console.permissions = "192.168.0.0/16"
 
   config.hosts.clear
+
+  #Exception notifier config
+  config.action_mailer.delivery_method  = :postmark
+  config.action_mailer.postmark_settings = { :api_token => Rails.application.secrets.postmark_api_token }
+  Rails.application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[ERROR] ",
+    :sender_address => %{"BSMAI" <#{Rails.application.secrets.info_email}>},
+    :exception_recipients => %w{papayalabs@gmail.com}
+  }
 end

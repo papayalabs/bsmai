@@ -156,6 +156,9 @@ GEM
     ethon (0.16.0)
       ffi (>= 1.15.0)
     event_stream_parser (1.0.0)
+    exception_notification (4.5.0)
+      actionmailer (>= 5.2, < 8)
+      activesupport (>= 5.2, < 8)
     faraday (2.12.0)
       faraday-net_http (>= 2.0, < 3.4)
       json
@@ -276,6 +279,11 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
+    postmark (1.25.1)
+      json
+    postmark-rails (0.21.0)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     prism (1.2.0)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -295,6 +303,8 @@ GEM
     rack (3.1.8)
     rack-session (2.0.0)
       rack (>= 3.0.0)
+    rack-static_fallback (1.0.4)
+      rack
     rack-test (2.1.0)
       rack (>= 1.3)
     rackup (2.1.0)
@@ -517,6 +527,7 @@ DEPENDENCIES
   dockerfile-rails (>= 1.6)
   ed25519 (>= 1.2, < 2.0)
   erd
+  exception_notification
   foreman
   gemini-ai (~> 4.2.0)
   google-apis-drive_v3
@@ -528,10 +539,12 @@ DEPENDENCIES
   net-ssh (>= 6.0.2)
   ollama-ai (~> 1.3.0)
   pg (~> 1.5.9)
+  postmark-rails (~> 0.21.0)
   pry
   pry-byebug
   pry-rails
   puma (>= 6.0)
+  rack-static_fallback
   rails (~> 7.1.3)
   rails_heroicon (~> 2.2.0)
   rails_layout
