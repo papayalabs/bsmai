@@ -73,7 +73,7 @@ class MessagesController < ApplicationController
     @message = @assistant.messages.new(message_params)
 
     if @message.save
-      unless params[:message][:content_text].include?("Prompt Instructions Runtime Error:")
+      unless params[:message][:content_text].present? && params[:message][:content_text].include?("Prompt Instructions Runtime Error:")
         puts "Message were created"
         if params[:prompt_index].present?
           @message.conversation.state["prompt_index"] = next_prompt.id
