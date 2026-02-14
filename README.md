@@ -1,7 +1,7 @@
 
 # BSMAI v0.5
 
-BSMAI is a private software that works with different assistant to creete Prompt Processes.
+BSMAI is a software that works with different assistant to creete Prompt Processes.
 
 
 ### Top features of BSMAI
