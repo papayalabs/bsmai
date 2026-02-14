@@ -1,4 +1,3 @@
-![](./public/bsmai.png)
 
 # BSMAI v0.5
 
